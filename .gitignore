@@ -1,0 +1,74 @@
+# General
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+node_modules/
+vendor/
+.env
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+storage/logs/*.log
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+public/storage
+public/hot
+public/mix-manifest.json
+public/css/
+public/js/
+public/assets/
+build/
+coverage/
+dist/
+
+# Laravel specific
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+storage/app/public/*
+!storage/app/public/.gitignore
+storage/logs/*
+!storage/logs/.gitignore
+storage/framework/cache/*
+!storage/framework/cache/.gitignore
+storage/framework/sessions/*
+!storage/framework/sessions/.gitignore
+storage/framework/views/*
+!storage/framework/views/.gitignore
+
+# React specific
+*.eslintcache
+.eslintcache
+node_modules/
+build/
+coverage/
+dist/
+
+# Testing
+phpunit.result.cache
+phpunit.xml
+phpunit.xml.dist
+tests/_output/
+tests/_support/_generated/
+
+# IDE-specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# Deployment
+.deploy/
+.deploy*/
+
+# Composer
+composer.lock
