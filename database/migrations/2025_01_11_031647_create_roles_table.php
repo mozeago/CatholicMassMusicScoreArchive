@@ -11,20 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenants', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id(); // INT primary key
-            $table->ulid('tenant_ulid')->unique(); // ULID for tenant identification
-            $table->string('name')->unique(); // Tenant name
-            $table->string('email')->unique(); // Contact email
+            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade'); // Tenant ID FK
+            $table->string('name')->unique(); // Name of the role
+            $table->string('guard_name'); // Used to define guard (e.g., web, api)
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('roles');
     }
 };

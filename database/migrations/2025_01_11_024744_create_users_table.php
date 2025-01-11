@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // INT primary key
-            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade'); // INT Foreign Key
+            $table->foreignId('tenant_id')->nullable()->constrained('tenants')->onDelete('cascade'); // INT Foreign Key
             $table->ulid('user_ulid')->unique(); // ULID
             $table->string('name');
             $table->string('email')->unique();
