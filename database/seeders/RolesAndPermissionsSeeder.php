@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Tenant;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -54,10 +55,29 @@ class RolesAndPermissionsSeeder extends Seeder
         }
         foreach ($tenants as $tenant) {
             // Roles
-            $admin = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
-            $composer = Role::firstOrCreate(['name' => 'Composer', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
-            $user = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
-            $guest = Role::firstOrCreate(['name' => 'Guest', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
+            $admin = Role::firstOrCreate([
+                'name' => 'Admin',
+                'guard_name' => 'web',
+                'tenant_id' => $tenant->id,
+                'ulid' => Str::ulid(),
+            ]);
+            $composer = Role::firstOrCreate([
+                'name' => 'Composer',
+                'guard_name' => 'web',
+                'tenant_id' => $tenant->id,
+                'ulid' => Str::ulid()]);
+            $user = Role::firstOrCreate([
+                'name' => 'User',
+                'guard_name' => 'web',
+                'tenant_id' => $tenant->id,
+                'ulid' => Str::ulid(),
+            ]);
+            $guest = Role::firstOrCreate([
+                'name' => 'Guest',
+                'guard_name' => 'web',
+                'tenant_id' => $tenant->id,
+                'ulid' => Str::ulid(),
+            ]);
             // Assign Permissions to Roles
             $admin->syncPermissions(Permission::all());
 

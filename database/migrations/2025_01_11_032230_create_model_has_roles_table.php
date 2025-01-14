@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('model_has_roles', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('model_type');
-            $table->bigInteger('model_id');
-            $table->foreignId('role_id')->constrained()->onDelete('cascade'); // Role ID
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('model_has_roles')) {
+            Schema::create('model_has_roles', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('model_type');
+                $table->bigInteger('model_id');
+                $table->foreignId('role_id')->constrained()->onDelete('cascade'); // Role ID
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void

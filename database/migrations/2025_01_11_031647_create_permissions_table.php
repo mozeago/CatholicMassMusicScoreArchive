@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permissions', function (Blueprint $table) {
-            $table->id(); // INT primary key
-            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade'); // Tenant ID FK
-            $table->string('name'); // Permission name
-            $table->string('guard_name'); // Used to define guard (e.g., web, api)
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('permissions')) {
+            Schema::create('permissions', function (Blueprint $table) {
+                $table->id(); // INT primary key
+                $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade'); // Tenant ID FK
+                $table->string('name'); // Permission name
+                $table->string('guard_name'); // Used to define guard (e.g., web, api)
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
