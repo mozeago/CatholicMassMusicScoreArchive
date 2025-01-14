@@ -2,17 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tenant;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      */
     public function run()
     {
+        // Fetch all tenants
+        $tenants = Tenant::all();
         // Permissions
         $permissions = [
             // Music Score
@@ -40,33 +44,45 @@ class RolesAndPermissionsSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            // Loop through each tenant
+            foreach ($tenants as $tenant) {
+                // Create permission scoped to this tenant
+                Permission::firstOrCreate(
+                    ['name' => $permission, 'tenant_id' => $tenant->id]// Assign tenant_id
+                );
+            }
         }
+        foreach ($tenants as $tenant) {
+            // Roles
+            $admin = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
+            $composer = Role::firstOrCreate(['name' => 'Composer', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
+            $user = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
+            $guest = Role::firstOrCreate(['name' => 'Guest', 'guard_name' => 'web', 'tenant_id' => $tenant->id]);
+            // Assign Permissions to Roles
+            $admin->syncPermissions(Permission::all());
 
-        // Roles
-        $admin = Role::firstOrCreate(['name' => 'Admin']);
-        $composer = Role::firstOrCreate(['name' => 'Composer']);
-        $user = Role::firstOrCreate(['name' => 'User']);
-        $guest = Role::firstOrCreate(['name' => 'Guest']);
+            // Assign specific permissions to other roles
+            $composer->syncPermissions([
+                'create music score',
+                'view music score',
+                'edit music score',
+                'delete music score',
+            ]);
 
-        // Assign Permissions to Roles
-        $admin->givePermissionTo(Permission::all());
+            $user->syncPermissions([
+                'view music score',
+                'like music score',
+                'download music score',
+            ]);
 
-        $composer->givePermissionTo([
-            'create music score',
-            'view music score',
-            'edit music score',
-            'delete music score',
-        ]);
-
-        $user->givePermissionTo([
-            'view music score',
-            'like music score',
-            'download music score',
-        ]);
-
-        $guest->givePermissionTo([
-            'view music score',
-        ]);
+            $guest->syncPermissions([
+                'view music score',
+            ]);
+            // Optionally, assign the 'Admin' role to the test user
+            $user = User::where('email', 'test@catholicmassmusicscorearchive.com')->first();
+            if ($user) {
+                $user->assignRole('Admin');
+            }
+        }
     }
 }
