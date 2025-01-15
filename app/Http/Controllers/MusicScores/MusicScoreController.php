@@ -17,7 +17,46 @@ class MusicScoreController extends Controller
 
         return response()->json($musicScores);
     }
+    // guest list all the available score sheets
+    public function guestIndex()
+    {
+        $scores = MusicScore::select('id', 'title', 'composer', 'category_id', 'created_at')
+            ->with('category:id,name') // Eager load category for efficiency
+            ->paginate(10);
 
+        return view('music-scores.guest-index', compact('scores'));
+    }
+    // guest preview a score sheet
+    public function preview($id)
+    {
+        $score = MusicScore::select('id', 'title', 'description', 'file_path', 'composer', 'category_id', 'created_at')
+            ->with('category:id,name')
+            ->findOrFail($id);
+
+        return view('music-scores.preview', compact('score'));
+    }
+// Allow guests to download a music score
+    public function download($id)
+    {
+        $score = MusicScore::select('score_pdf', 'title')->findOrFail($id);
+
+        $filePath = storage_path('app/public/' . $score->score_pdf);
+
+        if (!file_exists($filePath)) {
+            return abort(404, 'File not found.');
+        }
+
+        return Response::download($filePath, $score->title . '.pdf');
+    }
+    // Share a music score (generate shareable link)
+    public function share($id)
+    {
+        $score = MusicScore::select('id', 'title')->findOrFail($id);
+
+        $shareUrl = route('music-scores.preview', ['id' => $score->id]);
+
+        return view('music-scores.share', compact('score', 'shareUrl'));
+    }
     public function show($id)
     {
         // Cache the specific music score

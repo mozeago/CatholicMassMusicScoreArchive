@@ -5,6 +5,14 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// Guest Routes that dont need login
+// Routes for guests
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('/music-scores', [MusicScoreController::class, 'guestIndex'])->name('music-scores.guest.index');
+    Route::get('/music-scores/{id}', [MusicScoreController::class, 'preview'])->name('music-scores.preview');
+    Route::get('/music-scores/{id}/download', [MusicScoreController::class, 'download'])->name('music-scores.download');
+    Route::get('/music-scores/{id}/share', [MusicScoreController::class, 'share'])->name('music-scores.share');
+});
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),

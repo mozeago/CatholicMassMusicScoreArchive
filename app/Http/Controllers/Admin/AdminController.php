@@ -12,7 +12,13 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        // Using caching to improve performance
+        $users = Cache::remember('admin_users_index', 60, function () {
+            return User::select('id', 'name', 'email', 'created_at')
+                ->paginate(10); // Limit records to 10 per page
+        });
+
+        return view('admin.index', compact('users'));
     }
 
     /**
