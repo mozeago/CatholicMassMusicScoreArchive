@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,11 +16,10 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::firstOrCreate([
-            'email' => 'test@example.com',
+            'email' => strtolower('test@catholicmassmusicscorearchive.com'),
         ], [
             'name' => 'Test User',
             'password' => bcrypt('password'),
-            'user_ulid' => Str::ulid(),
         ]);
         $this->call([
             TenantSeeder::class,

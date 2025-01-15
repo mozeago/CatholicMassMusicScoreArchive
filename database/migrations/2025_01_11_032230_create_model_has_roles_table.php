@@ -13,9 +13,11 @@ return new class extends Migration
     {
         if (!Schema::hasTable('model_has_roles')) {
             Schema::create('model_has_roles', function (Blueprint $table) {
-                $table->bigIncrements('id');
+                $table->id();
+                $table->ulid('ulid')->unique();
                 $table->string('model_type');
                 $table->bigInteger('model_id');
+                $table->foreign('model_id')->references('id')->on('users')->onDelete('cascade');
                 $table->foreignId('role_id')->constrained()->onDelete('cascade'); // Role ID
                 $table->timestamps();
             });

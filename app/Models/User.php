@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_ulid',
+        'ulid',
     ];
 
     /**
@@ -55,8 +56,8 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::creating(function ($user) {
-            // Automatically set the 'user_ulid' field to a new ULID before creating the user
-            $user->user_ulid = Str::ulid();
+            // Automatically set the 'ulid' field to a new ULID before creating the user
+            $user->ulid = Str::ulid();
         });
     }
 }
