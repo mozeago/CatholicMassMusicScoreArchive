@@ -22,6 +22,8 @@ php artisan key:generate
 Run Database Migrations:
 
 php artisan migrate
+php artisan migrate:refresh // to clear the migration error on reference keys
+
 Install Frontend Dependencies:
 
 npm install
