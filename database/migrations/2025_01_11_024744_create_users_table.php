@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id(); // INT primary key
-            $table->foreignId('tenant_id')->nullable()->constrained('tenants')->onDelete('cascade'); // INT Foreign Key
-            $table->ulid('user_ulid')->unique(); // ULID
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('users')) {
+            Schema::create('users', function (Blueprint $table) {
+                $table->id(); // INT primary key
+                $table->ulid('ulid')->unique();
+                $table->foreignId('tenant_id')->nullable()->constrained('tenants')->onDelete('cascade'); // INT Foreign Key
+                $table->string('name');
+                $table->string('email')->unique();
+                $table->timestamp('email_verified_at')->nullable();
+                $table->string('password');
+                $table->rememberToken();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->id(); // INT primary key
-            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade'); // Tenant ID FK
-            $table->foreignId('role_id')->constrained()->onDelete('cascade'); // Role ID
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // User ID
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('role_user')) {
+            Schema::create('role_user', function (Blueprint $table) {
+                $table->id(); // INT primary key
+                $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade'); // Tenant ID FK
+                $table->foreignId('role_id')->constrained()->onDelete('cascade'); // Role ID
+                $table->foreignId('user_id')->constrained()->onDelete('cascade'); // User ID
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void

@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tenant;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class TenantSeeder extends Seeder
 {
@@ -14,35 +16,35 @@ class TenantSeeder extends Seeder
         // Create multiple tenants with Kenyan names and companies
         $tenants = [
             [
-                'ulid' => \Str::ulid(),
+                'ulid' => Str::ulid(),
                 'name' => 'Mambo Technologies Ltd.',
                 'email' => 'mambo_tech@example.com',
                 'domain' => 'mambo.technologies.local',
                 'logo' => null,
             ],
             [
-                'ulid' => \Str::ulid(),
+                'ulid' => Str::ulid(),
                 'name' => 'Kenya Green Energy Solutions',
                 'email' => 'kenya_green@example.com',
                 'domain' => 'greenenergy.kenya.local',
                 'logo' => null,
             ],
             [
-                'ulid' => \Str::ulid(),
+                'ulid' => Str::ulid(),
                 'name' => 'Safari Enterprises Ltd.',
                 'email' => 'safari_enterprises@example.com',
                 'domain' => 'safari.enterprises.local',
                 'logo' => null,
             ],
             [
-                'ulid' => \Str::ulid(),
+                'ulid' => Str::ulid(),
                 'name' => 'Jambo Foods Kenya',
                 'email' => 'jambo_foods@example.com',
                 'domain' => 'jambo.foods.local',
                 'logo' => null,
             ],
             [
-                'ulid' => \Str::ulid(),
+                'ulid' => Str::ulid(),
                 'name' => 'Boma Construction Co.',
                 'email' => 'boma_construction@example.com',
                 'domain' => 'boma.construction.local',
@@ -52,7 +54,10 @@ class TenantSeeder extends Seeder
 
         // Insert all tenants into the database
         foreach ($tenants as $tenant) {
-            Tenant::create($tenant);
+            Tenant::firstOrCreate(
+                ['email' => $tenant['email']], // Check if the email already exists
+                $tenant // Create the tenant if it doesn't exist
+            );
         }
     }
 }
