@@ -12,7 +12,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        // Cache categories for fast retrieval
+        $categories = Cache::remember('categories', 60, function () {
+            return Category::select('id', 'name')->paginate(10);
+        });
+
+        return response()->json($categories);
     }
 
     /**
@@ -36,7 +41,12 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Cache specific category
+        $category = Cache::remember("category_{$id}", 60, function () use ($id) {
+            return Category::findOrFail($id);
+        });
+
+        return response()->json($category);
     }
 
     /**

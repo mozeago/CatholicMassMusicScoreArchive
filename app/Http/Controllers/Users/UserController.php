@@ -12,7 +12,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $this->authorize('manage-users');
+
+        // Cache users for admin
+        $users = Cache::remember('users', 60, function () {
+            return User::select('id', 'name', 'email')->paginate(10);
+        });
+
+        return response()->json($users);
     }
 
     /**
@@ -36,7 +43,14 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $this->authorize('manage-users');
+
+        // Cache specific user
+        $user = Cache::remember("user_{$id}", 60, function () use ($id) {
+            return User::findOrFail($id);
+        });
+
+        return response()->json($user);
     }
 
     /**

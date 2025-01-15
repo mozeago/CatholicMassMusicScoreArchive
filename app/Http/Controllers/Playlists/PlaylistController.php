@@ -12,7 +12,12 @@ class PlaylistController extends Controller
      */
     public function index()
     {
-        //
+        // Cache playlists for fast retrieval
+        $playlists = Cache::remember('playlists', 60, function () {
+            return Playlist::select('id', 'name', 'user_id')->paginate(10);
+        });
+
+        return response()->json($playlists);
     }
 
     /**
@@ -36,7 +41,12 @@ class PlaylistController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Cache specific playlist
+        $playlist = Cache::remember("playlist_{$id}", 60, function () use ($id) {
+            return Playlist::findOrFail($id);
+        });
+
+        return response()->json($playlist);
     }
 
     /**
