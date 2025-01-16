@@ -121,12 +121,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
                     <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                         {/* Sticky Header */}
-                        <header className={`sticky top-0 z-50 ${theme === "dark" ? "bg-black" : "bg-gray-50"} shadow-md`}>
+                        <header className={`sticky top-0 z-50 ${theme === "dark" ? "bg-black" : "bg-gray-800"} shadow-md`}>
                             <div className="py-4 px-6 flex items-center justify-between">
                                 {/* Logo */}
                                 <div className="flex items-center space-x-3">
                                     <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
-                                    <span className="text-lg font-semibold text-black dark:text-white">
+                                    <span className="text-lg font-semibold text-white dark:text-white">
                                         Catholic Mass Music
                                     </span>
                                 </div>
@@ -145,7 +145,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     {auth.user ? (
                                         <Link
                                             href={route("dashboard")}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                            className="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                         >
                                             Dashboard
                                         </Link>
@@ -153,13 +153,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         <>
                                             <Link
                                                 href={route("login")}
-                                                className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                                className="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                             >
                                                 Log in
                                             </Link>
                                             <Link
                                                 href={route("register")}
-                                                className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                                className="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                             >
                                                 Register
                                             </Link>
@@ -167,14 +167,14 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     )}
                                     {/* Language Switch */}
                                     <button
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                        className="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                         onClick={() => alert("Switch Language")}
                                     >
                                         Language
                                     </button>
                                     {/* Theme Switcher */}
                                     <button
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                        className="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                         onClick={handleThemeSwitch}
                                     >
                                         Theme
@@ -204,7 +204,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             </div>
 
                             {/* Catholic Seasons and Mass Sections */}
-                            <div className="bg-gray-200 dark:bg-gray-800 py-2 px-6 flex justify-between items-center text-sm text-gray-700 dark:text-gray-300">
+                            <div className="bg-gray-800 dark:bg-gray-900 py-2 px-6 flex justify-between items-center text-sm text-gray-300 dark:text-gray-300">
                                 <div className="flex space-x-4">
                                     {["Advent", "Christmas", "Lent", "Easter", "Ordinary Time"].map((season) => (
                                         <span
@@ -219,8 +219,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             </div>
 
                             {/* Mass Sections Filter */}
-                            <div className="bg-gray-200 dark:bg-gray-800 py-2 px-6">
-                                <div className="flex space-x-4 text-sm text-gray-700 dark:text-gray-300">
+                            <div className="bg-gray-800 dark:bg-gray-900 py-2 px-6">
+                                <div className="flex space-x-4 text-sm text-gray-300 dark:text-gray-300">
                                     {availableMassSections.map((section) => (
                                         <span
                                             key={section}
@@ -234,7 +234,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                             {/* Mobile Menu Content */}
                             {isMenuOpen && (
-                                <div className="lg:hidden bg-gray-200 dark:bg-gray-800 py-2 px-6 space-y-2">
+                                <div className="lg:hidden bg-gray-800 dark:bg-gray-900 py-2 px-6 space-y-2">
                                     {["Advent", "Christmas", "Lent", "Easter", "Ordinary Time"].map((season) => (
                                         <span
                                             key={season}
