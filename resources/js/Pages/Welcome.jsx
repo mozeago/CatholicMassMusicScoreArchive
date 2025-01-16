@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from "react";
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [theme, setTheme] = useState('light'); // For theme switching
     const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu
@@ -21,9 +21,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         Easter: ["Kyrie", "Gloria", "Credo", "Sanctus", "Agnus Dei"],
         "Ordinary Time": ["Kyrie", "Gloria", "Credo", "Sanctus", "Agnus Dei"],
     };
-
     const availableMassSections = massSections[selectedSeason] || massSections["Ordinary Time"];
-
     const [activeTab, setActiveTab] = useState("mostViewed");
     const [selectedTimeSignature, setSelectedTimeSignature] = useState(null);
     const [selectedKeySignature, setSelectedKeySignature] = useState(null);
@@ -108,12 +106,41 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         return timeSignatureMatch && keySignatureMatch;
     });
 
-    const timeSignatures = ["1/4", "2/4", "3/4", "3/8", "4/4", "5/4", "5/8", "6/4", "6/8",
-        "7/4", "7/8", "9/8", "11/8", "12/8", "13/8"];
+    const timeSignatures = [
+        // Simple Time Signatures
+        "1/4", "2/4", "3/4", "4/4", "5/4", "6/4", "7/4",
+
+        // Simple Asymmetric Time Signatures
+        "5/8", "7/8", "11/8", "13/8",
+
+        // Compound Time Signatures
+        "6/8", "9/8", "12/8", "15/8", "18/8", // Compound duple, triple, quadruple, etc.
+
+        // Less Common Compound Time Signatures
+        "6/16", "9/16", "12/16", "15/16", // Faster variants
+
+        // Odd Compound Time Signatures
+        "8/8", "10/8", "14/8", "16/8" // Used for more complex rhythms
+    ];
     const keySignatures = ["A Major", "A Minor", "Ab Major", "B Major", "Bb Major", "B Minor",
         "C Major", "C Minor", "C# Minor", "D Major", "D Minor", "D# Minor",
         "Db Major", "E Major", "E Minor", "Eb Major", "Eb Minor", "F Major",
         "F Minor", "F# Major", "F# Minor", "G Major", "G Minor", "G# Minor"];
+    const dummyScores = [
+        { title: "Ave Maria", composer: "Schubert", timeSignature: "4/4", pages: 3, key: "C Major", keyboardOrgan: "Organ", downloads: 150, season: "Advent", massSection: "Opening Hymn" },
+        { title: "Canon in D", composer: "Pachelbel", timeSignature: "4/4", pages: 5, key: "D Major", keyboardOrgan: "Piano", downloads: 200, season: "Christmas", massSection: "Offertory" },
+        { title: "Nocturne in E-flat Major", composer: "Chopin", timeSignature: "3/4", pages: 2, key: "E-flat Major", keyboardOrgan: "Piano", downloads: 120, season: "Lent", massSection: "Communion" },
+        { title: "Ode to Joy", composer: "Beethoven", timeSignature: "4/4", pages: 4, key: "D Major", keyboardOrgan: "Piano", downloads: 180, season: "Easter", massSection: "Closing Hymn" },
+        { title: "Clair de Lune", composer: "Debussy", timeSignature: "9/8", pages: 6, key: "D-flat Major", keyboardOrgan: "Piano", downloads: 210, season: "Ordinary Time", massSection: "Prelude" },
+        { title: "Canon in D", composer: "Pachelbel", timeSignature: "4/4", pages: 3, key: "D Major", keyboardOrgan: "Organ", downloads: 100, season: "Christmas", massSection: "Offertory" },
+        { title: "Fur Elise", composer: "Beethoven", timeSignature: "3/8", pages: 1, key: "A Minor", keyboardOrgan: "Piano", downloads: 250, season: "Advent", massSection: "Postlude" },
+        { title: "Requiem Mass", composer: "Mozart", timeSignature: "4/4", pages: 10, key: "D Minor", keyboardOrgan: "Organ", downloads: 80, season: "Lent", massSection: "Communion" },
+        { title: "Prelude in C Major", composer: "Bach", timeSignature: "4/4", pages: 2, key: "C Major", keyboardOrgan: "Organ", downloads: 95, season: "Ordinary Time", massSection: "Prelude" },
+        { title: "Symphony No. 5", composer: "Beethoven", timeSignature: "2/4", pages: 12, key: "C Minor", keyboardOrgan: "Orchestra", downloads: 220, season: "Easter", massSection: "Entrance Hymn" },
+        // Add more items up to 20 for testing...
+    ];
+
+
     return (
         <>
             <Head title="Welcome" />
@@ -127,7 +154,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 <div className="flex items-center space-x-3">
                                     <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
                                     <span className="text-lg font-semibold text-white dark:text-white">
-                                        Catholic Mass Music
+                                        {appName}
                                     </span>
                                 </div>
 
@@ -203,34 +230,37 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 </button>
                             </div>
 
-                            {/* Catholic Seasons and Mass Sections */}
-                            <div className="bg-gray-800 dark:bg-gray-900 py-2 px-6 flex justify-between items-center text-sm text-gray-300 dark:text-gray-300">
-                                <div className="flex space-x-4">
+                            {/* Seasons and Mass Sections Layout */}
+                            <div className="bg-gray-800 dark:bg-gray-900 py-2 px-6 text-sm text-gray-300 dark:text-gray-300">
+                                {/* Season Tabs */}
+                                <div className="flex space-x-4 mb-4 border-b border-gray-600">
                                     {["Advent", "Christmas", "Lent", "Easter", "Ordinary Time"].map((season) => (
                                         <span
                                             key={season}
-                                            className="cursor-pointer hover:text-[#FF2D20]"
+                                            className={`cursor-pointer py-2 px-4 rounded-t-lg transition-all duration-300
+                    ${selectedSeason === season ? "bg-[#FF2D20] text-white" : "hover:bg-gray-700"}`}
                                             onClick={() => handleSeasonClick(season)}
                                         >
                                             {season}
                                         </span>
                                     ))}
                                 </div>
-                            </div>
 
-                            {/* Mass Sections Filter */}
-                            <div className="bg-gray-800 dark:bg-gray-900 py-2 px-6">
-                                <div className="flex space-x-4 text-sm text-gray-300 dark:text-gray-300">
+                                {/* Mass Sections for the Selected Season (Row Layout) */}
+                                <div className="flex flex-wrap space-x-6 mb-4">
                                     {availableMassSections.map((section) => (
-                                        <span
+                                        <div
                                             key={section}
-                                            className="cursor-pointer hover:text-[#FF2D20]"
+                                            className="flex items-center space-x-3 cursor-pointer py-2 px-4 rounded-lg transition-all duration-300
+                    hover:bg-gray-700 text-gray-300 dark:text-gray-300"
+                                            onClick={() => { } /* Action on click */}
                                         >
-                                            {section}
-                                        </span>
+                                            <span className="text-[#FF2D20]">{section}</span>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
+
 
                             {/* Mobile Menu Content */}
                             {isMenuOpen && (
@@ -250,6 +280,48 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                         {/* Main Content */}
                         <main className="mt-6">
+                            {/* Display First 20 Music Scores based on the Season and mass sectionfilter*/}
+                            <section className="mb-8">
+                                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                                    Featured Music Scores
+                                </h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                                    {dummyScores.map((score, index) => (
+                                        <div key={index} className="p-6 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800 hover:shadow-xl transition transform hover:scale-105">
+                                            <div className="relative">
+                                                <img
+                                                    src={`https://placehold.co/600x400/000000/FFFFFF/png?text=Score+${index + 1}`}
+                                                    alt={`Music Score ${index + 1}`}
+                                                    className="w-full h-40 object-cover rounded-lg"
+                                                />
+                                            </div>
+                                            <div className="mt-4 text-sm text-gray-700 dark:text-gray-300">
+                                                <h4 className="font-semibold text-lg truncate">{score.title}</h4>
+
+                                                {/* Two Column Layout for Details */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                                    <p><strong>Composer:</strong> {score.composer}</p>
+                                                    <p><strong>Time Signature:</strong> {score.timeSignature}</p>
+                                                    <p><strong>Season:</strong> {score.season}</p>
+                                                    <p><strong>Mass Section:</strong> {score.massSection}</p>
+                                                    <p><strong>Pages:</strong> {score.pages}</p>
+                                                    <p><strong>Key:</strong> {score.key}</p>
+                                                    <p><strong>Keyboard/Organ:</strong> {score.keyboardOrgan}</p>
+                                                    <p><strong>Downloads:</strong> {score.downloads}</p>
+                                                </div>
+                                            </div>
+                                            <div className="mt-4 flex justify-between items-center">
+                                                <button className="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-medium hover:bg-red-700 transition">
+                                                    <i className="fas fa-download mr-2"></i>Download
+                                                </button>
+                                                <button className="rounded-md bg-blue-600 px-4 py-2 text-white text-sm font-medium hover:bg-blue-700 transition">
+                                                    <i className="fas fa-share-alt mr-2"></i>Share
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
                             <div className="space-y-8">
                                 {/* Tab Headers */}
                                 <div className="flex space-x-8 border-b border-gray-300 pb-4">
@@ -301,7 +373,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 </div>
 
                                 {/* Time Signature Chips */}
-                                <div className="mt-4 flex flex-wrap space-x-4">
+                                <div className="mt-4 flex flex-wrap space-x-4 space-y-2">
                                     {timeSignatures.map((timeSignature) => (
                                         <button
                                             key={timeSignature}
@@ -382,7 +454,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                         {/* Footer */}
                         <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            Catholic Mass Music Score Archive @2025
+                            {appName} @2025
                         </footer>
                     </div>
                 </div>
