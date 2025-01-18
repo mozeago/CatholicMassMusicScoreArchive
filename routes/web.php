@@ -10,22 +10,20 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware(['auth:web'])->group(function () {
 // List all music scores
-    Route::get('/music-scores', [MusicScoreController::class, 'index'])->name('music-scores.index');
+Route::get('/music-scores', [MusicScoreController::class, 'index'])->name('music-scores.index');
 // Show the form for creating a new music score
-    Route::get('/music-scores/create', [MusicScoreController::class, 'create'])->name('music-scores.create');
+Route::get('/music-scores/create', [MusicScoreController::class, 'create'])->name('music-scores.create');
 // Store a new music score
-    Route::post('/music-scores', [MusicScoreController::class, 'store'])->name('music-scores.store');
+Route::post('/music-scores', [MusicScoreController::class, 'store'])->name('music-scores.store');
 // Display a specific music score
-    Route::get('/music-scores/{id}', [MusicScoreController::class, 'show'])->name('music-scores.show');
+Route::get('/music-scores/{id}', [MusicScoreController::class, 'show'])->name('music-scores.show');
 // Show the form for editing a music score
-    Route::get('/music-scores/{id}/edit', [MusicScoreController::class, 'edit'])->name('music-scores.edit');
+Route::get('/music-scores/{id}/edit', [MusicScoreController::class, 'edit'])->name('music-scores.edit');
 // Update a specific music score
-    Route::put('/music-scores/{id}', [MusicScoreController::class, 'update'])->name('music-scores.update');
+Route::put('/music-scores/{id}', [MusicScoreController::class, 'update'])->name('music-scores.update');
 // Delete a specific music score
-    Route::delete('/music-scores/{id}', [MusicScoreController::class, 'destroy'])->name('music-scores.destroy');
-});
+Route::delete('/music-scores/{id}', [MusicScoreController::class, 'destroy'])->name('music-scores.destroy');
 // Composers Management
 Route::middleware(['auth'])->group(function () {
     Route::resource('composers', ComposerController::class);

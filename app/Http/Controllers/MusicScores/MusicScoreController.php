@@ -1,210 +1,137 @@
-import React, { useState } from "react";
-import { useForm } from "@inertiajs/react";
+<?php
 
-const Upload = () => {
-const { data, setData, post, errors, processing } = useForm({
-title: "",
-composer: "",
-lyrist: "",
-year_composed: "",
-midi_file: null,
-score_pdf: null,
-chorus: "",
-stanzas: "[]", // Default as an empty JSON array
-});
+namespace App\Http\Controllers\MusicScores;
 
-// Handle form submission
-const handleSubmit = (e) => {
-e.preventDefault();
+use App\Http\Controllers\Controller;
+use App\Models\MusicScore\MusicScore;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Response;
 
-// Create a FormData object to handle file uploads
-const formData = new FormData();
-formData.append('title', data.title);
-formData.append('composer', data.composer);
-formData.append('lyrist', data.lyrist);
-formData.append('year_composed', data.year_composed);
-formData.append('midi_file', data.midi_file);
-formData.append('score_pdf', data.score_pdf);
-formData.append('chorus', data.chorus);
-formData.append('stanzas', data.stanzas);
+class MusicScoreController extends Controller
+{
+    // Display a list of music scores
+    public function index()
+    {
+        $musicScores = Cache::remember('music_scores', 60, function () {
+            return MusicScore::select('id', 'title', 'composer', 'score_pdf')
+                ->with(['composer', 'category']) // eager load relationships
+                ->paginate(10);
+        });
 
-// Post the data to the store route
-post(route('music-scores.store'), {
-data: formData,
-preserveScroll: true,
-onStart: () => {
-// Disable form during upload
-},
-onFinish: () => {
-// Enable form after upload
+        return response()->json($musicScores);
+    }
+
+    // Display music scores for guests
+    public function guestIndex()
+    {
+        $scores = MusicScore::select('id', 'title', 'composer', 'created_at')->paginate(10);
+
+        return view('music-scores.guest-index', compact('scores'));
+    }
+
+    // Preview a specific score sheet for guests
+    public function preview($id)
+    {
+        $score = MusicScore::select('id', 'title', 'score_pdf', 'composer', 'created_at')
+            ->with('category:id,name')
+            ->findOrFail($id);
+
+        return view('music-scores.preview', compact('score'));
+    }
+
+    // Download a music score
+    public function download($id)
+    {
+        $score = MusicScore::select('score_pdf', 'title')->findOrFail($id);
+
+        $filePath = storage_path('app/public/' . $score->score_pdf);
+
+        if (!file_exists($filePath)) {
+            return abort(404, 'File not found.');
+        }
+
+        return Response::download($filePath, $score->title . '.pdf');
+    }
+
+    // Share a music score (generate a shareable link)
+    public function share($id)
+    {
+        $score = MusicScore::select('id', 'title')->findOrFail($id);
+
+        $shareUrl = route('music-scores.preview', ['id' => $score->id]);
+
+        return view('music-scores.share', compact('score', 'shareUrl'));
+    }
+
+    // Display details of a specific music score
+    public function show($id)
+    {
+        $musicScore = Cache::remember("music_score_{$id}", 60, function () use ($id) {
+            return MusicScore::with(['composer', 'category'])->findOrFail($id);
+        });
+
+        return response()->json($musicScore);
+    }
+
+    // Add a music score to user's favorites
+    public function favorite($id)
+    {
+        $user = auth()->user();
+        $user->favorites()->attach($id);
+
+        return response()->json(['message' => 'Added to favorites']);
+    }
+
+    // Remove a music score from user's favorites
+    public function unfavorite($id)
+    {
+        $user = auth()->user();
+        $user->favorites()->detach($id);
+
+        return response()->json(['message' => 'Removed from favorites']);
+    }
+
+    // Render the upload form
+    public function create()
+    {
+        return Inertia::render('MusicScores/Upload');
+    }
+
+    // Handle the upload and save the music score
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'composer' => 'required|string|max:255',
+            'lyrist' => 'nullable|string|max:255',
+            'year_composed' => 'nullable|integer',
+            'midi_file' => 'nullable|file|mimes:mid|max:5120',
+            'score_pdf' => 'required|file|mimes:pdf|max:10240',
+            'chorus' => 'nullable|string',
+            'stanzas' => 'nullable|json',
+        ]);
+
+        // Handle file uploads
+        $midiPath = $request->hasFile('midi_file') ? $request->file('midi_file')->store('music-scores/midi', 'public') : null;
+        $pdfPath = $request->file('score_pdf')->store('music-scores/pdf', 'public');
+
+        // Create the music score entry
+        MusicScore::create([
+            'title' => $request->input('title'),
+            'ulid' => Str::ulid(),
+            'composer' => $request->input('composer'),
+            'lyrist' => $request->input('lyrist'),
+            'year_composed' => $request->input('year_composed'),
+            'midi_file' => $midiPath,
+            'score_pdf' => $pdfPath,
+            'chorus' => $request->input('chorus'),
+            'stanzas' => $request->input('stanzas'),
+            'uploaded_by' => auth()->user()->id,
+        ]);
+
+        return redirect()->route('music-scores.guest.index')->with('success', 'Music score uploaded successfully!');
+    }
 }
-});
-};
-
-return (
-<div className="max-w-3xl mx-auto mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-    <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
-        Upload Music Score
-    </h1>
-    <form onSubmit={handleSubmit} encType="multipart/form-data">
-        {/* Title */}
-        <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Title
-            </label>
-            <input type="text" id="title" value={data.title} onChange={(e)=> setData("title", e.target.value)}
-            className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700
-            dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-            {errors.title && (
-            <p className="mt-2 text-sm text-red-600">{errors.title}</p>
-            )}
-        </div>
-
-        {/* Composer */}
-        <div className="mb-4">
-            <label htmlFor="composer" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Composer
-            </label>
-            <input type="text" id="composer" value={data.composer} onChange={(e)=> setData("composer", e.target.value)}
-            className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700
-            dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-            {errors.composer && (
-            <p className="mt-2 text-sm text-red-600">{errors.composer}</p>
-            )}
-        </div>
-
-        {/* Lyrist */}
-        <div className="mb-4">
-            <label htmlFor="lyrist" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Lyrist
-            </label>
-            <input type="text" id="lyrist" value={data.lyrist} onChange={(e)=> setData("lyrist", e.target.value)}
-            className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700
-            dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-            {errors.lyrist && (
-            <p className="mt-2 text-sm text-red-600">{errors.lyrist}</p>
-            )}
-        </div>
-
-        {/* Year Composed */}
-        <div className="mb-4">
-            <label htmlFor="year_composed" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Year Composed
-            </label>
-            <input type="number" id="year_composed" value={data.year_composed} onChange={(e)=> setData("year_composed",
-            e.target.value)}
-            className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700
-            dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-            {errors.year_composed && (
-            <p className="mt-2 text-sm text-red-600">{errors.year_composed}</p>
-            )}
-        </div>
-
-        {/* MIDI File */}
-        <div className="mb-4">
-            <label htmlFor="midi_file" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                MIDI File
-            </label>
-            <input type="file" id="midi_file" accept=".mid" onChange={(e)=> setData("midi_file", e.target.files[0])}
-            className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700
-            dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-            {errors.midi_file && (
-            <p className="mt-2 text-sm text-red-600">{errors.midi_file}</p>
-            )}
-        </div>
-
-        {/* Score PDF */}
-        <div className="mb-4">
-            <label htmlFor="score_pdf" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Score PDF
-            </label>
-            <input type="file" id="score_pdf" accept=".pdf" onChange={(e)=> setData("score_pdf", e.target.files[0])}
-            className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700
-            dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-            {errors.score_pdf && (
-            <p className="mt-2 text-sm text-red-600">{errors.score_pdf}</p>
-            )}
-        </div>
-
-        {/* Chorus */}
-        <div className="mb-4">
-            <label htmlFor="chorus" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Chorus
-            </label>
-            <textarea id="chorus" value={data.chorus} onChange={(e)=> setData("chorus", e.target.value)}
-                        className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                    {errors.chorus && (
-                        <p className="mt-2 text-sm text-red-600">{errors.chorus}</p>
-                    )}
-                </div>
-
-                {/* Stanzas */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="stanzas"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Stanzas (JSON)
-                    </label>
-                    <textarea
-                        id="stanzas"
-                        value={data.stanzas}
-                        onChange={(e) => setData("stanzas", e.target.value)}
-                        placeholder={`[
-    {
-        "stanza": 1,
-        "lines": ["Line 1 of stanza 1", "Line 2 of stanza 1"]
-    },
-    {
-        "stanza": 2,
-        "lines": ["Line 1 of stanza 2", "Line 2 of stanza 2"]
-    }
-]`}
-                        className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm placeholder-gray-500 dark:placeholder-gray-400"
-                    />
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Please enter stanzas in JSON format. Example:
-                    </p>
-                    <pre className="text-xs bg-gray-100 dark:bg-gray-900 dark:text-white p-2 rounded">
-                        {`[
-    {
-        "stanza": 1,
-        "lines": ["Line 1 of stanza 1", "Line 2 of stanza 1"]
-    },
-    {
-        "stanza": 2,
-        "lines": ["Line 1 of stanza 2", "Line 2 of stanza 2"]
-    }
-]`}
-                    </pre>
-                    {errors.stanzas && (
-                        <p className="mt-2 text-sm text-red-600">{errors.stanzas}</p>
-                    )}
-                </div>
-
-                {/* Submit Button */}
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={processing}
-                        className={`px-4 py-2 text-white rounded-md ${processing
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700"
-                            }`}
-                    >
-                        {processing ? "Uploading..." : "Upload"}
-                    </button>
-                </div>
-            </form>
-        </div>
-    );
-};
-
-export default Upload;

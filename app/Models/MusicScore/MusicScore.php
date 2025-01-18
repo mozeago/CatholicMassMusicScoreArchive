@@ -12,6 +12,7 @@ class MusicScore extends Model
 
     protected $fillable = [
         'title',
+        'ulid',
         'composer',
         'lyrist',
         'year_composed',

@@ -198,7 +198,7 @@ const Upload = () => {
     {
         "stanza": 1,
         "lines": ["Line 1 of stanza 1", "Line 2 of stanza 1"]
-    },
+},
     {
         "stanza": 2,
         "lines": ["Line 1 of stanza 2", "Line 2 of stanza 2"]
@@ -209,7 +209,6 @@ const Upload = () => {
                         <p className="mt-2 text-sm text-red-600">{errors.stanzas}</p>
                     )}
                 </div>
-
 
                 {/* Submit Button */}
                 <div className="flex justify-end">
