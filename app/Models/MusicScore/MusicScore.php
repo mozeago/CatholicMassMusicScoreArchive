@@ -26,6 +26,11 @@ class MusicScore extends Model
         'score_pdf',
         'chorus',
         'stanzas',
+        'time_signature',
+        'mass_section',
+        'season',
+        'key_signature',
+        'keyboard_organ',
     ];
 
     protected $casts = [
