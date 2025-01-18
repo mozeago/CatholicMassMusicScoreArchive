@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
+import React from "react";
 import { useForm } from "@inertiajs/react";
 
 const Upload = () => {
@@ -12,6 +11,11 @@ const Upload = () => {
         score_pdf: null,
         chorus: "",
         stanzas: "[]", // Default as an empty JSON array
+        time_signature: "",
+        mass_section: "",
+        season: "",
+        key_signature: "",
+        keyboard_organ: false, // Checkbox default
     });
 
     const handleSubmit = (e) => {
@@ -29,10 +33,7 @@ const Upload = () => {
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 {/* Title */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="title"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Title
                     </label>
                     <input
@@ -42,17 +43,12 @@ const Upload = () => {
                         onChange={(e) => setData("title", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.title && (
-                        <p className="mt-2 text-sm text-red-600">{errors.title}</p>
-                    )}
+                    {errors.title && <p className="mt-2 text-sm text-red-600">{errors.title}</p>}
                 </div>
 
                 {/* Composer */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="composer"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="composer" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Composer
                     </label>
                     <input
@@ -62,17 +58,12 @@ const Upload = () => {
                         onChange={(e) => setData("composer", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.composer && (
-                        <p className="mt-2 text-sm text-red-600">{errors.composer}</p>
-                    )}
+                    {errors.composer && <p className="mt-2 text-sm text-red-600">{errors.composer}</p>}
                 </div>
 
                 {/* Lyrist */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="lyrist"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="lyrist" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Lyrist
                     </label>
                     <input
@@ -82,17 +73,12 @@ const Upload = () => {
                         onChange={(e) => setData("lyrist", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.lyrist && (
-                        <p className="mt-2 text-sm text-red-600">{errors.lyrist}</p>
-                    )}
+                    {errors.lyrist && <p className="mt-2 text-sm text-red-600">{errors.lyrist}</p>}
                 </div>
 
                 {/* Year Composed */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="year_composed"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="year_composed" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Year Composed
                     </label>
                     <input
@@ -102,17 +88,12 @@ const Upload = () => {
                         onChange={(e) => setData("year_composed", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.year_composed && (
-                        <p className="mt-2 text-sm text-red-600">{errors.year_composed}</p>
-                    )}
+                    {errors.year_composed && <p className="mt-2 text-sm text-red-600">{errors.year_composed}</p>}
                 </div>
 
                 {/* MIDI File */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="midi_file"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="midi_file" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         MIDI File
                     </label>
                     <input
@@ -122,17 +103,12 @@ const Upload = () => {
                         onChange={(e) => setData("midi_file", e.target.files[0])}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.midi_file && (
-                        <p className="mt-2 text-sm text-red-600">{errors.midi_file}</p>
-                    )}
+                    {errors.midi_file && <p className="mt-2 text-sm text-red-600">{errors.midi_file}</p>}
                 </div>
 
                 {/* Score PDF */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="score_pdf"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="score_pdf" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Score PDF
                     </label>
                     <input
@@ -142,17 +118,12 @@ const Upload = () => {
                         onChange={(e) => setData("score_pdf", e.target.files[0])}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.score_pdf && (
-                        <p className="mt-2 text-sm text-red-600">{errors.score_pdf}</p>
-                    )}
+                    {errors.score_pdf && <p className="mt-2 text-sm text-red-600">{errors.score_pdf}</p>}
                 </div>
 
                 {/* Chorus */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="chorus"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="chorus" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Chorus
                     </label>
                     <textarea
@@ -161,53 +132,118 @@ const Upload = () => {
                         onChange={(e) => setData("chorus", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.chorus && (
-                        <p className="mt-2 text-sm text-red-600">{errors.chorus}</p>
-                    )}
+                    {errors.chorus && <p className="mt-2 text-sm text-red-600">{errors.chorus}</p>}
                 </div>
 
                 {/* Stanzas */}
                 <div className="mb-4">
-                    <label
-                        htmlFor="stanzas"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="stanzas" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Stanzas (JSON)
                     </label>
                     <textarea
                         id="stanzas"
                         value={data.stanzas}
                         onChange={(e) => setData("stanzas", e.target.value)}
-                        placeholder={`[
-    {
-        "stanza": 1,
-        "lines": ["Line 1 of stanza 1", "Line 2 of stanza 1"]
-    },
-    {
-        "stanza": 2,
-        "lines": ["Line 1 of stanza 2", "Line 2 of stanza 2"]
-    }
-]`}
+                        placeholder={`[\n    {\n        "stanza": 1,\n        "lines": ["Line 1 of stanza 1", "Line 2 of stanza 1"]\n    },\n    {\n        "stanza": 2,\n        "lines": ["Line 1 of stanza 2", "Line 2 of stanza 2"]\n    }\n]`}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm placeholder-gray-500 dark:placeholder-gray-400"
                     />
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Please enter stanzas in JSON format. Example:
-                    </p>
-                    <pre className="text-xs bg-gray-100 dark:bg-gray-900 dark:text-white p-2 rounded">
-                        {`[
-    {
-        "stanza": 1,
-        "lines": ["Line 1 of stanza 1", "Line 2 of stanza 1"]
-},
-    {
-        "stanza": 2,
-        "lines": ["Line 1 of stanza 2", "Line 2 of stanza 2"]
-    }
-]`}
-                    </pre>
-                    {errors.stanzas && (
-                        <p className="mt-2 text-sm text-red-600">{errors.stanzas}</p>
+                    {errors.stanzas && <p className="mt-2 text-sm text-red-600">{errors.stanzas}</p>}
+                </div>
+                {/* Time Signature */}
+                <div className="mb-4">
+                    <label
+                        htmlFor="time_signature"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Time Signature
+                    </label>
+                    <input
+                        type="text"
+                        id="time_signature"
+                        value={data.time_signature}
+                        onChange={(e) => setData("time_signature", e.target.value)}
+                        className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                    {errors.time_signature && (
+                        <p className="mt-2 text-sm text-red-600">{errors.time_signature}</p>
                     )}
+                </div>
+
+                {/* Mass Section */}
+                <div className="mb-4">
+                    <label
+                        htmlFor="mass_section"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Mass Section
+                    </label>
+                    <input
+                        type="text"
+                        id="mass_section"
+                        value={data.mass_section}
+                        onChange={(e) => setData("mass_section", e.target.value)}
+                        className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                    {errors.mass_section && (
+                        <p className="mt-2 text-sm text-red-600">{errors.mass_section}</p>
+                    )}
+                </div>
+
+                {/* Season */}
+                <div className="mb-4">
+                    <label
+                        htmlFor="season"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Season
+                    </label>
+                    <input
+                        type="text"
+                        id="season"
+                        value={data.season}
+                        onChange={(e) => setData("season", e.target.value)}
+                        className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                    {errors.season && (
+                        <p className="mt-2 text-sm text-red-600">{errors.season}</p>
+                    )}
+                </div>
+
+                {/* Key Signature */}
+                <div className="mb-4">
+                    <label
+                        htmlFor="key_signature"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Key Signature
+                    </label>
+                    <input
+                        type="text"
+                        id="key_signature"
+                        value={data.key_signature}
+                        onChange={(e) => setData("key_signature", e.target.value)}
+                        className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                    {errors.key_signature && (
+                        <p className="mt-2 text-sm text-red-600">{errors.key_signature}</p>
+                    )}
+                </div>
+
+                {/* Keyboard/Organ */}
+                <div className="mb-4 flex items-center">
+                    <input
+                        type="checkbox"
+                        id="keyboard_organ"
+                        checked={data.keyboard_organ}
+                        onChange={(e) => setData("keyboard_organ", e.target.checked)}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <label
+                        htmlFor="keyboard_organ"
+                        className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Keyboard/Organ
+                    </label>
                 </div>
 
                 {/* Submit Button */}

@@ -28,7 +28,12 @@ return new class extends Migration
                 $table->string('midi_file')->nullable();
                 $table->string('score_pdf')->nullable();
                 $table->text('chorus')->nullable();
-                $table->json('stanzas')->nullable(); // Store stanzas as JSON
+                $table->json('stanzas')->nullable();
+                $table->string('time_signature');
+                $table->string('mass_section');
+                $table->string('season');
+                $table->string('key_signature');
+                $table->boolean('keyboard_organ')->default(false);
                 $table->timestamps();
             });
         }
