@@ -29,7 +29,7 @@ class MusicScoreController extends Controller
     {
         $scores = MusicScore::select('id', 'title', 'composer', 'created_at')->paginate(10);
 
-        return view('music-scores.guest-index', compact('scores'));
+        return view('music-scores.index', compact('scores'));
     }
 
     // Preview a specific score sheet for guests
