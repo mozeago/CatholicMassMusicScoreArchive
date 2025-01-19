@@ -75,22 +75,28 @@ const Upload = () => {
                     />
                     {errors.lyrist && <p className="mt-2 text-sm text-red-600">{errors.lyrist}</p>}
                 </div>
-
-                {/* Year Composed */}
+                {/* Year of Release */}
                 <div className="mb-4">
                     <label htmlFor="year_composed" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Year Composed
+                        Year of Release
                     </label>
-                    <input
-                        type="number"
+                    <select
                         id="year_composed"
                         value={data.year_composed}
                         onChange={(e) => setData("year_composed", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
+                    >
+                        <option value="" disabled>
+                            Select a year
+                        </option>
+                        {Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
                     {errors.year_composed && <p className="mt-2 text-sm text-red-600">{errors.year_composed}</p>}
                 </div>
-
                 {/* MIDI File */}
                 <div className="mb-4">
                     <label htmlFor="midi_file" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -157,18 +163,34 @@ const Upload = () => {
                     >
                         Time Signature
                     </label>
-                    <input
-                        type="text"
+                    <select
                         id="time_signature"
                         value={data.time_signature}
                         onChange={(e) => setData("time_signature", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
+                    >
+                        <option value="" disabled>
+                            Select a time signature
+                        </option>
+                        {[
+                            // Common Time Signatures
+                            "2/4", "3/4", "4/4", "5/4", "6/4", "7/4", "9/4", "11/4",
+                            "2/8", "3/8", "4/8", "5/8", "6/8", "7/8", "9/8", "11/8", "13/8", "15/8", "17/8", "19/8", "21/8",
+                            "2/16", "3/16", "4/16", "5/16", "6/16", "7/16", "9/16", "12/16", "13/16", "15/16", "25/16", "33/16",
+                            // Additive Meters
+                            "4+3/8", "2+2+3/8", "5+5+7/8", "3+3+2/8",
+                            // Rare and Complex Time Signatures
+                            "1/4", "1/8", "1/16", "10/4", "19/8", "24/16", "45/16"
+                        ].map((signature) => (
+                            <option key={signature} value={signature}>
+                                {signature}
+                            </option>
+                        ))}
+                    </select>
                     {errors.time_signature && (
                         <p className="mt-2 text-sm text-red-600">{errors.time_signature}</p>
                     )}
                 </div>
-
                 {/* Mass Section */}
                 <div className="mb-4">
                     <label
@@ -177,17 +199,40 @@ const Upload = () => {
                     >
                         Mass Section
                     </label>
-                    <input
-                        type="text"
+                    <select
                         id="mass_section"
                         value={data.mass_section}
                         onChange={(e) => setData("mass_section", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
+                    >
+                        <option value="" disabled>
+                            Select a Mass Section
+                        </option>
+                        {[
+                            "Kyrie",                // Lord, have mercy
+                            "Gloria",               // Glory to God in the highest
+                            "Credo",                // Nicene Creed (I believe in one God)
+                            "Sanctus",              // Holy, Holy, Holy
+                            "Agnus Dei",            // Lamb of God
+                            "Introit",              // Entrance chant
+                            "Gradual",              // Psalm response after the first reading
+                            "Alleluia",             // Gospel acclamation (or Tract during Lent)
+                            "Offertory",            // Offertory chant or hymn
+                            "Offertory Procession", // Procession with gifts to the altar
+                            "Communion",            // Communion chant or hymn
+                            "Benedictus",           // Blessed is He (part of Sanctus in some settings)
+                            "Dismissal",            // Final blessing and sending
+                        ].map((section) => (
+                            <option key={section} value={section}>
+                                {section}
+                            </option>
+                        ))}
+                    </select>
                     {errors.mass_section && (
                         <p className="mt-2 text-sm text-red-600">{errors.mass_section}</p>
                     )}
                 </div>
+
 
                 {/* Season */}
                 <div className="mb-4">
@@ -197,13 +242,29 @@ const Upload = () => {
                     >
                         Season
                     </label>
-                    <input
-                        type="text"
+                    <select
                         id="season"
                         value={data.season}
                         onChange={(e) => setData("season", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
+                    >
+                        <option value="" disabled>
+                            Select a Liturgical Season
+                        </option>
+                        {[
+                            "Advent",             // Preparation for Christmas
+                            "Christmas",          // Celebration of Christ's birth
+                            "Ordinary Time",      // Time of growth and reflection
+                            "Lent",               // Preparation for Easter
+                            "Triduum",            // Holy Thursday, Good Friday, Holy Saturday
+                            "Easter",             // Celebration of the Resurrection
+                            "Pentecost",          // The coming of the Holy Spirit
+                        ].map((season) => (
+                            <option key={season} value={season}>
+                                {season}
+                            </option>
+                        ))}
+                    </select>
                     {errors.season && (
                         <p className="mt-2 text-sm text-red-600">{errors.season}</p>
                     )}
@@ -217,17 +278,48 @@ const Upload = () => {
                     >
                         Key Signature
                     </label>
-                    <input
-                        type="text"
+                    <select
                         id="key_signature"
                         value={data.key_signature}
                         onChange={(e) => setData("key_signature", e.target.value)}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
+                    >
+                        <option value="" disabled>
+                            Select a Key Signature
+                        </option>
+                        {[
+                            // A
+                            "A Major", "A Minor", "A# Major", "A# Minor", "Ab Major", "Ab Minor",
+
+                            // B
+                            "B Major", "B Minor", "Bb Major", "Bb Minor",
+
+                            // C
+                            "C Major", "C Minor", "C# Major", "C# Minor",
+
+                            // D
+                            "D Major", "D Minor", "D# Major", "D# Minor", "Db Major", "Db Minor",
+
+                            // E
+                            "E Major", "E Minor", "Eb Major", "Eb Minor",
+
+                            // F
+                            "F Major", "F Minor", "F# Major", "F# Minor",
+
+                            // G
+                            "G Major", "G Minor", "G# Minor", "Gb Major"
+                        ].map((key) => (
+                            <option key={key} value={key}>
+                                {key}
+                            </option>
+                        ))}
+                    </select>
                     {errors.key_signature && (
                         <p className="mt-2 text-sm text-red-600">{errors.key_signature}</p>
                     )}
                 </div>
+
+
 
                 {/* Keyboard/Organ */}
                 <div className="mb-4 flex items-center">

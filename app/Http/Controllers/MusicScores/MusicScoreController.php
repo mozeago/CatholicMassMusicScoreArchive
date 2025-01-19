@@ -130,6 +130,11 @@ class MusicScoreController extends Controller
             'chorus' => $request->input('chorus'),
             'stanzas' => $request->input('stanzas'),
             'uploaded_by' => auth()->user()->id,
+            'time_signature' => $request->input('time_signature'),
+            'mass_section' => $request->input('mass_section'),
+            'season' => $request->input('season'),
+            'key_signature' => $request->input('key_signature'),
+            'keyboard_organ' => $request->input('keyboard_organ'),
         ]);
 
         return redirect()->route('music-scores.guest.index')->with('success', 'Music score uploaded successfully!');
