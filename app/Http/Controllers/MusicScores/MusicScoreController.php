@@ -16,12 +16,42 @@ class MusicScoreController extends Controller
     public function index()
     {
         $musicScores = Cache::remember('music_scores', 60, function () {
-            return MusicScore::select('id', 'title', 'composer', 'score_pdf')
-                ->with(['composer', 'category']) // eager load relationships
+            return MusicScore::select([
+                'id',
+                'ulid',
+                'title',
+                'composer',
+                'lyrist',
+                'year_composed',
+                'uploaded_by',
+                'downloads',
+                'views',
+                'likes',
+                'shares',
+                'favorited',
+                'midi_file',
+                'score_pdf',
+                'chorus',
+                'stanzas',
+                'time_signature',
+                'mass_section',
+                'season',
+                'key_signature',
+                'keyboard_organ',
+                'created_at',
+                'updated_at',
+            ])
                 ->paginate(10);
         });
 
-        return response()->json($musicScores);
+        return Inertia::render('Welcome', [
+            'canLogin' => route('login') ? true : false,
+            'canRegister' => route('register') ? true : false,
+            'laravelVersion' => app()->version(),
+            'phpVersion' => PHP_VERSION,
+            'appName' => config('app.name'),
+            'musicScores' => $musicScores->items(), // Pass music scores to the frontend
+        ]);
     }
 
     // Display music scores for guests

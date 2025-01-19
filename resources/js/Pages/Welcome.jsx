@@ -1,6 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { useState } from "react";
 export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
+    const musicScores = usePage().props.musicScores;
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [theme, setTheme] = useState('light'); // For theme switching
     const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu
@@ -98,12 +99,18 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
         document.getElementById('background')?.classList.add('!hidden');
     };
     // Filter the scores based on the selected time and key signature
-    const filteredScores = scores[activeTab].filter((score) => {
-        const timeSignatureMatch =
-            selectedTimeSignature ? score.timeSignature === selectedTimeSignature : true;
-        const keySignatureMatch =
-            selectedKeySignature ? score.key === selectedKeySignature : true;
-        return timeSignatureMatch && keySignatureMatch;
+    const filteredScores = musicScores.filter((score) => {
+        const seasonMatch = selectedSeason
+            ? score.season === selectedSeason
+            : true;
+        const timeSignatureMatch = selectedTimeSignature
+            ? score.time_signature === selectedTimeSignature
+            : true;
+        const keySignatureMatch = selectedKeySignature
+            ? score.key_signature === selectedKeySignature
+            : true;
+
+        return seasonMatch && timeSignatureMatch && keySignatureMatch;
     });
 
     const timeSignatures = [
@@ -139,8 +146,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
         { title: "Symphony No. 5", composer: "Beethoven", timeSignature: "2/4", pages: 12, key: "C Minor", keyboardOrgan: "Orchestra", downloads: 220, season: "Easter", massSection: "Entrance Hymn" },
         // Add more items up to 20 for testing...
     ];
-
-
     return (
         <>
             <Head title="Welcome" />
@@ -286,7 +291,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                     Featured Music Scores
                                 </h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
-                                    {dummyScores.map((score, index) => (
+                                    {filteredScores.map((score, index) => (
                                         <div key={index} className="p-6 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800 hover:shadow-xl transition transform hover:scale-105">
                                             <div className="relative">
                                                 <img
@@ -300,14 +305,14 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
 
                                                 {/* Two Column Layout for Details */}
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                                                    <p><strong>Composer:</strong> {score.composer}</p>
-                                                    <p><strong>Time Signature:</strong> {score.timeSignature}</p>
-                                                    <p><strong>Season:</strong> {score.season}</p>
-                                                    <p><strong>Mass Section:</strong> {score.massSection}</p>
-                                                    <p><strong>Pages:</strong> {score.pages}</p>
-                                                    <p><strong>Key:</strong> {score.key}</p>
+                                                    <p><strong>Composer:</strong> {score.composer || "unknown"}</p>
+                                                    <p><strong>Time Signature:</strong> {score.time_signature || "N/A"}</p>
+                                                    <p><strong>Season:</strong> {score.season || "N/A"}</p>
+                                                    <p><strong>Mass Section:</strong> {score.mass_section || "N/A"}</p>
+                                                    <p><strong>Pages:</strong> {score.pages || "N/A"}</p>
+                                                    <p><strong>Key:</strong> {score.key_signature || "N/A"}</p>
                                                     <p><strong>Keyboard/Organ:</strong> {score.keyboardOrgan}</p>
-                                                    <p><strong>Downloads:</strong> {score.downloads}</p>
+                                                    <p><strong>Downloads:</strong> {score.downloads || "N/A"}</p>
                                                 </div>
                                             </div>
                                             <div className="mt-4 flex justify-between items-center">
