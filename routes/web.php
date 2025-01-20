@@ -6,7 +6,6 @@ use App\Http\Controllers\MusicScores\MusicScoreController;
 use App\Http\Controllers\Playlists\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Users\UserController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -37,15 +36,8 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/music-scores/{id}/download', [MusicScoreController::class, 'download'])->name('music-scores.download');
     Route::get('/music-scores/{id}/share', [MusicScoreController::class, 'share'])->name('music-scores.share');
 });
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-        'appName' => config('app.name'),
-    ]);
-});
+Route::get('/', [MusicScoreController::class, 'index'])->name('music-scores.guest.index');
+
 // Dashboard (Requires Authentication)
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
