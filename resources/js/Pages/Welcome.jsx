@@ -115,37 +115,21 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
 
     const timeSignatures = [
         // Simple Time Signatures
-        "1/4", "2/4", "3/4", "4/4", "5/4", "6/4", "7/4",
+        "1/4", "2/4", "3/4", "4/4", "5/4", "6/4", "7/4", "8/4", "9/4", "10/4", "11/4", "12/4",
+        "2/2", "2/8", "3/8", "3/2",
+        // "4/8", "8/8", "16/8",
 
-        // Simple Asymmetric Time Signatures
-        "5/8", "7/8", "11/8", "13/8",
+        // // Simple Asymmetric Time Signatures
+        // "5/8", "7/8", "9/8", "11/8", "13/8", "15/8", "17/8", "19/8", "21/8",
 
-        // Compound Time Signatures
-        "6/8", "9/8", "12/8", "15/8", "18/8", // Compound duple, triple, quadruple, etc.
-
-        // Less Common Compound Time Signatures
-        "6/16", "9/16", "12/16", "15/16", // Faster variants
-
-        // Odd Compound Time Signatures
-        "8/8", "10/8", "14/8", "16/8" // Used for more complex rhythms
+        // // Compound Time Signatures
+        // "6/8", "9/8", // Compound duple, triple, etc.
+        // "6/16", "9/16", "12/16",
     ];
     const keySignatures = ["A Major", "A Minor", "Ab Major", "B Major", "Bb Major", "B Minor",
         "C Major", "C Minor", "C# Minor", "D Major", "D Minor", "D# Minor",
         "Db Major", "E Major", "E Minor", "Eb Major", "Eb Minor", "F Major",
         "F Minor", "F# Major", "F# Minor", "G Major", "G Minor", "G# Minor"];
-    const dummyScores = [
-        { title: "Ave Maria", composer: "Schubert", timeSignature: "4/4", pages: 3, key: "C Major", keyboardOrgan: "Organ", downloads: 150, season: "Advent", massSection: "Opening Hymn" },
-        { title: "Canon in D", composer: "Pachelbel", timeSignature: "4/4", pages: 5, key: "D Major", keyboardOrgan: "Piano", downloads: 200, season: "Christmas", massSection: "Offertory" },
-        { title: "Nocturne in E-flat Major", composer: "Chopin", timeSignature: "3/4", pages: 2, key: "E-flat Major", keyboardOrgan: "Piano", downloads: 120, season: "Lent", massSection: "Communion" },
-        { title: "Ode to Joy", composer: "Beethoven", timeSignature: "4/4", pages: 4, key: "D Major", keyboardOrgan: "Piano", downloads: 180, season: "Easter", massSection: "Closing Hymn" },
-        { title: "Clair de Lune", composer: "Debussy", timeSignature: "9/8", pages: 6, key: "D-flat Major", keyboardOrgan: "Piano", downloads: 210, season: "Ordinary Time", massSection: "Prelude" },
-        { title: "Canon in D", composer: "Pachelbel", timeSignature: "4/4", pages: 3, key: "D Major", keyboardOrgan: "Organ", downloads: 100, season: "Christmas", massSection: "Offertory" },
-        { title: "Fur Elise", composer: "Beethoven", timeSignature: "3/8", pages: 1, key: "A Minor", keyboardOrgan: "Piano", downloads: 250, season: "Advent", massSection: "Postlude" },
-        { title: "Requiem Mass", composer: "Mozart", timeSignature: "4/4", pages: 10, key: "D Minor", keyboardOrgan: "Organ", downloads: 80, season: "Lent", massSection: "Communion" },
-        { title: "Prelude in C Major", composer: "Bach", timeSignature: "4/4", pages: 2, key: "C Major", keyboardOrgan: "Organ", downloads: 95, season: "Ordinary Time", massSection: "Prelude" },
-        { title: "Symphony No. 5", composer: "Beethoven", timeSignature: "2/4", pages: 12, key: "C Minor", keyboardOrgan: "Orchestra", downloads: 220, season: "Easter", massSection: "Entrance Hymn" },
-        // Add more items up to 20 for testing...
-    ];
     return (
         <>
             <Head title="Welcome" />
@@ -281,6 +265,39 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                     ))}
                                 </div>
                             )}
+                            <div className='py-4 px-6'>
+                                {/* Time Signature Chips */}
+                                <div className="mt-4 flex flex-wrap gap-2 justify-start">
+                                    {timeSignatures.map((timeSignature) => (
+                                        <button
+                                            key={timeSignature}
+                                            className={`px-4 py-2 text-sm font-medium rounded-full ${selectedTimeSignature === timeSignature
+                                                ? "bg-blue-600 text-white"
+                                                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                                                }`}
+                                            onClick={() => handleTimeSignatureClick(timeSignature)}
+                                        >
+                                            {timeSignature}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Key Signature Chips */}
+                                <div className="mt-4 flex flex-wrap gap-2 justify-start">
+                                    {keySignatures.map((keySignature) => (
+                                        <button
+                                            key={keySignature}
+                                            className={`px-4 py-2 text-sm font-medium rounded-full ${selectedKeySignature === keySignature
+                                                ? "bg-blue-600 text-white"
+                                                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                                                }`}
+                                            onClick={() => handleKeySignatureClick(keySignature)}
+                                        >
+                                            {keySignature}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </header>
 
                         {/* Main Content */}
@@ -311,7 +328,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                                     <p><strong>Mass Section:</strong> {score.mass_section || "N/A"}</p>
                                                     <p><strong>Pages:</strong> {score.pages || "N/A"}</p>
                                                     <p><strong>Key:</strong> {score.key_signature || "N/A"}</p>
-                                                    <p><strong>Keyboard/Organ:</strong> {score.keyboardOrgan}</p>
+                                                    <p><strong>Keyboard/Organ:</strong> {score.keyboard_organ || "N/A"}</p>
                                                     <p><strong>Downloads:</strong> {score.downloads || "N/A"}</p>
                                                 </div>
                                             </div>
@@ -375,38 +392,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                     >
                                         Latest Uploaded
                                     </button>
-                                </div>
-
-                                {/* Time Signature Chips */}
-                                <div className="mt-4 flex flex-wrap space-x-4 space-y-2">
-                                    {timeSignatures.map((timeSignature) => (
-                                        <button
-                                            key={timeSignature}
-                                            className={`px-4 py-2 text-sm font-medium rounded-full ${selectedTimeSignature === timeSignature
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                                                }`}
-                                            onClick={() => handleTimeSignatureClick(timeSignature)}
-                                        >
-                                            {timeSignature}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* Key Signature Chips */}
-                                <div className="mt-4 flex flex-wrap space-x-4 space-y-2">
-                                    {keySignatures.map((keySignature) => (
-                                        <button
-                                            key={keySignature}
-                                            className={`px-4 py-2 text-sm font-medium rounded-full ${selectedKeySignature === keySignature
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                                                }`}
-                                            onClick={() => handleKeySignatureClick(keySignature)}
-                                        >
-                                            {keySignature}
-                                        </button>
-                                    ))}
                                 </div>
 
                                 {/* Tab Content */}
