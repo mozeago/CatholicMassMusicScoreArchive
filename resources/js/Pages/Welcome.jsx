@@ -4,11 +4,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
     const musicScores = usePage().props.musicScores;
     const [searchTerm, setSearchTerm] = useState(""); // State for search input
     const [selectedSeason, setSelectedSeason] = useState(null);
+    const [selectedMassSection, setSelectedMassSection] = useState(null);
     const [theme, setTheme] = useState('light'); // For theme switching
     const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu
 
     const handleSeasonClick = (season) => {
         setSelectedSeason(season);
+        setSelectedMassSection(null); // Reset mass section when season changes
     };
 
     const handleThemeSwitch = () => {
@@ -17,12 +19,128 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
     };
 
     const massSections = {
-        Advent: ["Kyrie", "Gloria", "Credo", "Sanctus", "Agnus Dei"],
-        Christmas: ["Kyrie", "Gloria", "Credo", "Sanctus", "Agnus Dei"],
-        Lent: ["Kyrie", "Credo", "Sanctus", "Agnus Dei"], // No Gloria during Lent
-        Easter: ["Kyrie", "Gloria", "Credo", "Sanctus", "Agnus Dei"],
-        "Ordinary Time": ["Kyrie", "Gloria", "Credo", "Sanctus", "Agnus Dei"],
+        Advent: [
+            "Introit (Injili ya Kuingia)", // Entrance chant
+            "Entrance Antiphon (Antifona ya Kuingia)", // Opening hymn/chant
+            "Penitential Act (Kitubio)", // Acknowledgement of sins
+            "Kyrie (Kirie)", // "Lord, have mercy"
+            "Gloria (Utukufu)", // Hymn of praise (omitted during Lent)
+            "Collect (Sala ya Mwisho ya Kuingia)", // Opening prayer
+            "First Reading (Somo la Kwanza)", // From the Old Testament or Acts
+            "Responsorial Psalm (Zaburi ya Kujibu)", // Sung or spoken psalm
+            "Second Reading (Somo la Pili)", // From the New Testament letters
+            "Gospel Acclamation (Aleluya ya Injili)", // "Alleluia" or seasonal chant
+            "Gospel (Injili)", // From one of the Gospels
+            "Homily (Mahubiri)", // Sermon by the priest
+            "Creed (Kanuni ya Imani)", // Profession of faith
+            "Prayers of the Faithful (Maombi ya Waamini)", // General intercessions
+            "Offertory (Sadaka)", // Presentation of gifts
+            "Sanctus (Mtakatifu)", // "Holy, Holy, Holy"
+            "Eucharistic Prayer (Sala ya Ekaristi)", // Includes consecration
+            "Agnus Dei (Mwanakondoo wa Mungu)", // "Lamb of God"
+            "Communion Antiphon (Antifona ya Komunio)", // Accompanying chant
+            "Prayer After Communion (Sala ya Mwisho ya Komunio)", // Closing prayer
+            "Blessing (Baraka)", // Final blessing
+            "Dismissal (Kutumwa)", // Sending forth
+        ],
+        Christmas: [
+            "Introit (Injili ya Kuingia)",
+            "Entrance Antiphon (Antifona ya Kuingia)",
+            "Penitential Act (Kitubio)",
+            "Kyrie (Kirie)",
+            "Gloria (Utukufu)",
+            "Collect (Sala ya Mwisho ya Kuingia)",
+            "First Reading (Somo la Kwanza)",
+            "Responsorial Psalm (Zaburi ya Kujibu)",
+            "Second Reading (Somo la Pili)",
+            "Gospel Acclamation (Aleluya ya Injili)",
+            "Gospel (Injili)",
+            "Homily (Mahubiri)",
+            "Creed (Kanuni ya Imani)",
+            "Prayers of the Faithful (Maombi ya Waamini)",
+            "Offertory (Sadaka)",
+            "Sanctus (Mtakatifu)",
+            "Eucharistic Prayer (Sala ya Ekaristi)",
+            "Agnus Dei (Mwanakondoo wa Mungu)",
+            "Communion Antiphon (Antifona ya Komunio)",
+            "Prayer After Communion (Sala ya Mwisho ya Komunio)",
+            "Blessing (Baraka)",
+            "Dismissal (Kutumwa)",
+        ],
+        Lent: [
+            "Introit (Injili ya Kuingia)",
+            "Entrance Antiphon (Antifona ya Kuingia)",
+            "Penitential Act (Kitubio)",
+            "Kyrie (Kirie)",
+            "Collect (Sala ya Mwisho ya Kuingia)",
+            "First Reading (Somo la Kwanza)",
+            "Responsorial Psalm (Zaburi ya Kujibu)",
+            "Second Reading (Somo la Pili)",
+            "Gospel Acclamation (Aleluya ya Injili)", // Seasonal chant replaces "Alleluia"
+            "Gospel (Injili)",
+            "Homily (Mahubiri)",
+            "Creed (Kanuni ya Imani)",
+            "Prayers of the Faithful (Maombi ya Waamini)",
+            "Offertory (Sadaka)",
+            "Sanctus (Mtakatifu)",
+            "Eucharistic Prayer (Sala ya Ekaristi)",
+            "Agnus Dei (Mwanakondoo wa Mungu)",
+            "Communion Antiphon (Antifona ya Komunio)",
+            "Prayer After Communion (Sala ya Mwisho ya Komunio)",
+            "Blessing (Baraka)",
+            "Dismissal (Kutumwa)",
+        ],
+        Easter: [
+            "Introit (Injili ya Kuingia)",
+            "Entrance Antiphon (Antifona ya Kuingia)",
+            "Penitential Act (Kitubio)",
+            "Kyrie (Kirie)",
+            "Gloria (Utukufu)",
+            "Collect (Sala ya Mwisho ya Kuingia)",
+            "First Reading (Somo la Kwanza)",
+            "Responsorial Psalm (Zaburi ya Kujibu)",
+            "Second Reading (Somo la Pili)",
+            "Gospel Acclamation (Aleluya ya Injili)",
+            "Gospel (Injili)",
+            "Homily (Mahubiri)",
+            "Creed (Kanuni ya Imani)",
+            "Prayers of the Faithful (Maombi ya Waamini)",
+            "Offertory (Sadaka)",
+            "Sanctus (Mtakatifu)",
+            "Eucharistic Prayer (Sala ya Ekaristi)",
+            "Agnus Dei (Mwanakondoo wa Mungu)",
+            "Communion Antiphon (Antifona ya Komunio)",
+            "Prayer After Communion (Sala ya Mwisho ya Komunio)",
+            "Blessing (Baraka)",
+            "Dismissal (Kutumwa)",
+        ],
+        "Ordinary Time": [
+            "Introit (Injili ya Kuingia)",
+            "Entrance Antiphon (Antifona ya Kuingia)",
+            "Penitential Act (Kitubio)",
+            "Kyrie (Kirie)",
+            "Gloria (Utukufu)",
+            "Collect (Sala ya Mwisho ya Kuingia)",
+            "First Reading (Somo la Kwanza)",
+            "Responsorial Psalm (Zaburi ya Kujibu)",
+            "Second Reading (Somo la Pili)",
+            "Gospel Acclamation (Aleluya ya Injili)",
+            "Gospel (Injili)",
+            "Homily (Mahubiri)",
+            "Creed (Kanuni ya Imani)",
+            "Prayers of the Faithful (Maombi ya Waamini)",
+            "Offertory (Sadaka)",
+            "Sanctus (Mtakatifu)",
+            "Eucharistic Prayer (Sala ya Ekaristi)",
+            "Agnus Dei (Mwanakondoo wa Mungu)",
+            "Communion Antiphon (Antifona ya Komunio)",
+            "Prayer After Communion (Sala ya Mwisho ya Komunio)",
+            "Blessing (Baraka)",
+            "Dismissal (Kutumwa)",
+        ],
     };
+
+
     const availableMassSections = massSections[selectedSeason] || massSections["Ordinary Time"];
     const [activeTab, setActiveTab] = useState("mostViewed");
     const [selectedTimeSignature, setSelectedTimeSignature] = useState(null);
@@ -117,6 +235,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
         const seasonMatch = selectedSeason
             ? score.season === selectedSeason
             : true;
+        const massSectionMatch = selectedMassSection
+            ? score.mass_section === selectedMassSection
+            : true;
         const timeSignatureMatch = selectedTimeSignature
             ? score.time_signature === selectedTimeSignature
             : true;
@@ -124,7 +245,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
             ? score.key_signature === selectedKeySignature
             : true;
 
-        return searchMatch && seasonMatch && timeSignatureMatch && keySignatureMatch;
+        return searchMatch && seasonMatch && massSectionMatch && timeSignatureMatch && keySignatureMatch;
     });
 
     const timeSignatures = [
@@ -256,14 +377,18 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                     {availableMassSections.map((section) => (
                                         <div
                                             key={section}
-                                            className="flex items-center space-x-3 cursor-pointer py-2 px-4 rounded-lg transition-all duration-300
-                    hover:bg-gray-700 text-gray-300 dark:text-gray-300"
-                                            onClick={() => { } /* Action on click */}
+                                            className={`flex items-center space-x-3 cursor-pointer py-2 px-4 rounded-lg transition-all duration-300
+                ${selectedMassSection === section
+                                                    ? "bg-gray-700 text-white"
+                                                    : "hover:bg-gray-700 text-gray-300 dark:text-gray-300"
+                                                }`}
+                                            onClick={() => setSelectedMassSection(section)} // Update selectedMassSection state on click
                                         >
                                             <span className="text-[#FF2D20]">{section}</span>
                                         </div>
                                     ))}
                                 </div>
+
                             </div>
 
 
