@@ -1,7 +1,8 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
     const musicScores = usePage().props.musicScores;
+    const [searchTerm, setSearchTerm] = useState(""); // State for search input
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [theme, setTheme] = useState('light'); // For theme switching
     const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu
@@ -100,6 +101,19 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
     };
     // Filter the scores based on the selected time and key signature
     const filteredScores = musicScores.filter((score) => {
+        const searchTermLower = searchTerm.toLowerCase();
+        // Match against real-time search
+        const searchMatch = [
+            score.title?.toLowerCase().includes(searchTermLower),
+            score.composer?.toLowerCase().includes(searchTermLower),
+            score.lyrist?.toLowerCase().includes(searchTermLower),
+            score.year_composed?.toString().includes(searchTermLower),
+            score.uploaded_by?.toString().includes(searchTermLower),
+            score.chorus?.toLowerCase().includes(searchTermLower),
+            JSON.stringify(score.stanzas || "").toLowerCase().includes(searchTermLower),
+            score.mass_section?.toLowerCase().includes(searchTermLower),
+            score.season?.toLowerCase().includes(searchTermLower),
+        ].some((match) => match);
         const seasonMatch = selectedSeason
             ? score.season === selectedSeason
             : true;
@@ -110,7 +124,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
             ? score.key_signature === selectedKeySignature
             : true;
 
-        return seasonMatch && timeSignatureMatch && keySignatureMatch;
+        return searchMatch && seasonMatch && timeSignatureMatch && keySignatureMatch;
     });
 
     const timeSignatures = [
@@ -148,11 +162,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                 </div>
 
                                 {/* Search Input */}
-                                <div className="flex-grow max-w-md mx-auto">
+                                <div className="flex-grow max-w-md mx-auto mt-4">
                                     <input
                                         type="text"
                                         placeholder="Search music scores..."
                                         className="w-full rounded-md px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF2D20] dark:border-gray-700 dark:bg-black dark:text-white"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
 
