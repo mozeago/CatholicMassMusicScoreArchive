@@ -169,4 +169,77 @@ class MusicScoreController extends Controller
 
         return redirect()->route('music-scores.guest.index')->with('success', 'Music score uploaded successfully!');
     }
+    // Show the form for editing a music score
+    public function edit($ulid)
+    {
+        $score = MusicScore::where('ulid', $ulid)->firstOrFail();
+
+        // Ensure the user has permission to edit the score (optional)
+        if ($score->uploaded_by != auth()->user()->id) {
+            return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
+        }
+
+        return Inertia::render('MusicScores/Edit', [
+            'musicScore' => $score,
+        ]);
+    }
+
+    // Update a specific music score
+    public function update(Request $request, $ulid)
+    {
+        $request->validate([
+            'title' => 'required|string',
+            'composer' => 'nullable|string|max:255',
+            'lyrist' => 'nullable|string|max:255',
+            'year_composed' => 'nullable|date_format:Y',
+            'time_signature' => 'required|string',
+            'mass_section' => 'required|string',
+            'season' => 'required|string',
+            'key_signature' => 'required|string',
+            'midi_file' => 'nullable|file|mimes:mid,midi',
+            'score_pdf' => 'nullable|file|mimes:pdf',
+            'chorus' => 'nullable|string',
+            'stanzas' => 'nullable|json',
+            'uploaded_by' => 'required|exists:users,id',
+        ]);
+
+        $score = MusicScore::where('ulid', $ulid)->firstOrFail();
+
+        if ($score->uploaded_by != auth()->user()->id) {
+            return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
+        }
+
+        // Update the score fields
+        $data = $request->all();
+
+        // Handle file uploads
+        if ($request->hasFile('midi_file')) {
+            $data['midi_file'] = $request->file('midi_file')->store('music-scores/midi', 'public');
+        }
+
+        if ($request->hasFile('score_pdf')) {
+            $data['score_pdf'] = $request->file('score_pdf')->store('music-scores/pdf', 'public');
+        }
+
+        // Update the score entry
+        $score->update($data);
+
+        return redirect()->route('music-scores.index')->with('success', 'Music score updated successfully.');
+    }
+
+    // Delete a specific music score
+    public function destroy($id)
+    {
+        $score = MusicScore::findOrFail($id);
+
+        // Ensure the user has permission to delete the score
+        if ($score->uploaded_by != auth()->user()->id) {
+            return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
+        }
+
+        // Delete the score
+        $score->delete();
+
+        return redirect()->route('music-scores.index')->with('success', 'Music score deleted successfully.');
+    }
 }
