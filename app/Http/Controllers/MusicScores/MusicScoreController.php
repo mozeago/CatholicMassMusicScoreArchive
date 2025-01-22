@@ -203,21 +203,29 @@ class MusicScoreController extends Controller
             'uploaded_by' => 'required|exists:users,id',
         ]);
 
-        $score = MusicScore::where('ulid', $ulid)->firstOrFail();
-
+        $score = MusicScore::findOrFail($id);
+        if ($request->has('stanzas')) {
+            $data['stanzas'] = json_decode($request->stanzas, true);
+        }
         if ($score->uploaded_by != auth()->user()->id) {
             return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
         }
 
         // Update the score fields
         $data = $request->all();
+        \Log::info($data);
 
         // Handle file uploads
         if ($request->hasFile('midi_file')) {
+            if ($score->midi_file) {
+                Storage::disk('public')->delete($score->midi_file);
+            }
             $data['midi_file'] = $request->file('midi_file')->store('music-scores/midi', 'public');
         }
-
         if ($request->hasFile('score_pdf')) {
+            if ($score->score_pdf) {
+                Storage::disk('public')->delete($score->score_pdf);
+            }
             $data['score_pdf'] = $request->file('score_pdf')->store('music-scores/pdf', 'public');
         }
 

@@ -20,18 +20,9 @@ const Upload = ({ musicScore }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        Inertia.put(`/music-scores/${musicScore.ulid}`, data, {
-            onSuccess: () => {
-                alert('Music score updated successfully.');
-            },
-            onError: (errors) => {
-                console.error('Validation errors:', errors);
-                alert('Failed to update music score.');
-            },
+        put(route("music-scores.update", musicScore), {
+            preserveScroll: true,
         });
-        // put(route("music-scores.update", musicScore.ulid), {
-        //     preserveScroll: true,
-        // });
     };
 
     return (
