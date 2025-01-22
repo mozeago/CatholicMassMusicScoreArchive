@@ -17,13 +17,13 @@ Route::middleware(['auth:web'])->group(function () {
 // Store a new music score
     Route::post('/music-scores', [MusicScoreController::class, 'store'])->name('music-scores.store');
 // Display a specific music score
-    Route::get('/music-scores/{id}', [MusicScoreController::class, 'show'])->name('music-scores.show');
+    Route::get('/music-scores/{ulid}', [MusicScoreController::class, 'show'])->name('music-scores.show');
 // Show the form for editing a music score
     Route::get('/music-scores/{ulid}/edit', [MusicScoreController::class, 'edit'])->name('music-scores.edit');
 // Update a specific music score
-    Route::put('/music-scores/{id}', [MusicScoreController::class, 'update'])->name('music-scores.update');
+    Route::put('/music-scores/{ulid}', [MusicScoreController::class, 'update'])->name('music-scores.update');
 // Delete a specific music score
-    Route::delete('/music-scores/{id}', [MusicScoreController::class, 'destroy'])->name('music-scores.destroy');
+    Route::delete('/music-scores/{ulid}', [MusicScoreController::class, 'destroy'])->name('music-scores.destroy');
 // Composers Management
     Route::resource('composers', ComposerController::class);
 // Profile Management (Authenticated Users)

@@ -196,23 +196,24 @@ class MusicScoreController extends Controller
             'mass_section' => 'required|string',
             'season' => 'required|string',
             'key_signature' => 'required|string',
-            'midi_file' => 'nullable|file|mimes:mid,midi',
+            'midi_file' => 'nullable|file|mimes:mid,midi,smf,kar',
             'score_pdf' => 'nullable|file|mimes:pdf',
             'chorus' => 'nullable|string',
             'stanzas' => 'nullable|json',
-            'uploaded_by' => 'required|exists:users,id',
+            'uploaded_by' => 'required',
         ]);
 
-        $score = MusicScore::findOrFail($id);
-        if ($request->has('stanzas')) {
-            $data['stanzas'] = json_decode($request->stanzas, true);
-        }
+        $score = MusicScore::where('ulid', $ulid)->firstOrFail();
+
         if ($score->uploaded_by != auth()->user()->id) {
             return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
         }
 
         // Update the score fields
         $data = $request->all();
+        if ($request->has('stanzas')) {
+            $data['stanzas'] = json_decode($request->stanzas, true);
+        }
         \Log::info($data);
 
         // Handle file uploads
