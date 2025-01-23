@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\MusicScore\MusicScore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,5 +60,9 @@ class User extends Authenticatable
             // Automatically set the 'ulid' field to a new ULID before creating the user
             $user->ulid = Str::ulid();
         });
+    }
+    public function musicScores()
+    {
+        return $this->hasMany(MusicScore::class);
     }
 }

@@ -24,13 +24,14 @@ class MusicScore extends Model
         'favorited',
         'midi_file',
         'score_pdf',
+        'season',
+        'mass_section',
+        'key_signature',
+        'time_signature',
+        'keyboard_organ',
         'chorus',
         'stanzas',
-        'time_signature',
-        'mass_section',
-        'season',
-        'key_signature',
-        'keyboard_organ',
+
     ];
 
     protected $casts = [

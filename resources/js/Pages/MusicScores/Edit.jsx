@@ -17,6 +17,7 @@ const Upload = ({ musicScore }) => {
         key_signature: musicScore.key_signature || "",
         time_signature: musicScore.time_signature || "",
         keyboard_organ: musicScore.keyboard_organ || false,
+        uploaded_by: musicScore.uploaded_by
     });
     const seasons = ["Advent", "Christmass", "Lent", "Easter", "Ordinary Time"];
     const massSections = [
@@ -63,10 +64,15 @@ const Upload = ({ musicScore }) => {
     ];
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(data);
+        console.log("Data before submit:", data); // Log the data here
+        if (Object.keys(errors).length > 0) {
+            console.log("Validation Errors:", errors);
+            return; // Prevent the PUT request if there are errors
+        }
         put(route("music-scores.update", { ulid: musicScore.ulid }), data, {
             preserveScroll: true,
         });
+        console.log("Data After submit:", data);
     };
 
     return (
