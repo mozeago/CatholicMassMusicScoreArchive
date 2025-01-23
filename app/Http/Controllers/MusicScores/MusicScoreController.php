@@ -265,12 +265,11 @@ class MusicScoreController extends Controller
 
         // Ensure the user has permission to delete the score
         if ($score->uploaded_by != auth()->user()->id) {
-            return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
+            return back()->with('error', 'Unauthorized action.');
         }
 
         // Delete the score
         $score->delete();
-
-        return redirect()->route('music-scores.index')->with('success', 'Music score deleted successfully.');
+        return back()->with('success', 'Music score deleted successfully.');
     }
 }

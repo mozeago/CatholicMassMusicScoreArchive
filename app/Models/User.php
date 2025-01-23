@@ -63,6 +63,6 @@ class User extends Authenticatable
     }
     public function musicScores()
     {
-        return $this->hasMany(MusicScore::class);
+        return $this->hasMany(MusicScore::class, 'uploaded_by'); // Have Specified 'uploaded_by' as the foreign key on the musicscore table
     }
 }
