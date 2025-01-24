@@ -16,10 +16,8 @@ export default function Dashboard({ musicScores }) {
             // Use Inertia to send the delete request
             Inertia.delete(`/music-scores/${ulid}`, {
                 onSuccess: () => {
-                    alert('Score deleted successfully!');
                     // Refresh the list without reloading the whole page
                     setScores((prevScores) => prevScores.filter(musicScore => musicScore.ulid !== ulid));
-
                 },
                 onError: () => {
                     alert('Failed to delete score.');
