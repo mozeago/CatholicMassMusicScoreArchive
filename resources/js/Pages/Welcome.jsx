@@ -1,13 +1,23 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useState, useEffect } from "react";
-export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
+export default function Welcome({ auth, laravelVersion, phpVersion, appName, fileUrl }) {
     const musicScores = usePage().props.musicScores;
     const [searchTerm, setSearchTerm] = useState(""); // State for search input
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [selectedMassSection, setSelectedMassSection] = useState(null);
     const [theme, setTheme] = useState('light'); // For theme switching
     const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu
-
+    const handleDownload = (fileUrl) => {
+        const baseUrl = window.location.origin;
+        const fullUrl = `${baseUrl}/storage/${fileUrl}`;
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileUrl.split('/').pop();
+        document.body.appendChild(link);
+        console.log(fullUrl);
+        link.click();
+        document.body.removeChild(link);
+    };
     const handleSeasonClick = (season) => {
         setSelectedSeason(season);
         setSelectedMassSection(null); // Reset mass section when season changes
@@ -475,7 +485,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                                 </div>
                                             </div>
                                             <div className="mt-4 flex justify-between items-center">
-                                                <button className="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-medium hover:bg-red-700 transition">
+                                                <button className="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-medium hover:bg-red-700 transition"
+                                                    onClick={() => handleDownload(score.score_pdf)}
+                                                >
                                                     <i className="fas fa-download mr-2"></i>Download
                                                 </button>
                                                 <button className="rounded-md bg-blue-600 px-4 py-2 text-white text-sm font-medium hover:bg-blue-700 transition">
