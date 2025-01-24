@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\Categories\CategoryController;
 use App\Http\Controllers\Composers\ComposerController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\MusicScores\MusicScoreController;
 use App\Http\Controllers\Playlists\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Users\UserController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware(['auth:web'])->group(function () {
 // List all music scores
@@ -50,9 +50,9 @@ Route::middleware('throttle:60,1')->group(function () {
 Route::get('/', [MusicScoreController::class, 'index'])->name('music-scores.guest.index');
 
 // Dashboard (Requires Authentication)
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // User Management (Admin Only)
 Route::middleware(['auth', 'can:manage-users'])->group(function () {

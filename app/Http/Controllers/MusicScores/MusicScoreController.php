@@ -217,7 +217,6 @@ class MusicScoreController extends Controller
                 ]);
                 return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
             }
-
             // Validate the incoming data
             $data = $validated;
             \Log::info('Validated Data:', $data); // Log the validated data
@@ -225,11 +224,7 @@ class MusicScoreController extends Controller
             if (isset($data['stanzas']) && is_string($data['stanzas'])) {
                 $data['stanzas'] = json_decode($data['stanzas'], true);
             }
-
             // Handle MIDI file upload
-            // Assuming $request is the request object passed to the controller method
-
-// Handle MIDI file upload
             if ($request->hasFile('midi_file')) {
                 if ($score->midi_file) {
                     \Log::info('Deleting old MIDI file: ' . $score->midi_file); // Log deletion
@@ -238,8 +233,7 @@ class MusicScoreController extends Controller
                 $data['midi_file'] = $request->file('midi_file')->store('music-scores/midi', 'public');
                 \Log::info('Uploaded new MIDI file: ' . $data['midi_file']);
             }
-
-// Handle PDF file upload
+            // Handle PDF file upload
             if ($request->hasFile('score_pdf')) {
                 if ($score->score_pdf) {
                     \Log::info('Deleting old score PDF: ' . $score->score_pdf); // Log deletion
@@ -265,18 +259,17 @@ class MusicScoreController extends Controller
     }
 
     // Delete a specific music score
-    public function destroy($id)
+    public function destroy($ulid)
     {
-        $score = MusicScore::findOrFail($id);
+        $score = MusicScore::where('ulid', $ulid)->firstOrFail();
 
         // Ensure the user has permission to delete the score
         if ($score->uploaded_by != auth()->user()->id) {
-            return redirect()->route('music-scores.index')->with('error', 'Unauthorized action.');
+            return back()->with('error', 'Unauthorized action.');
         }
 
         // Delete the score
         $score->delete();
-
-        return redirect()->route('music-scores.index')->with('success', 'Music score deleted successfully.');
+        return back()->with('success', 'Music score deleted successfully.');
     }
 }

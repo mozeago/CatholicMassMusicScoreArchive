@@ -149,12 +149,24 @@ const Upload = () => {
                     <textarea
                         id="stanzas"
                         value={data.stanzas}
-                        onChange={(e) => setData("stanzas", e.target.value)}
+                        onChange={(e) => {
+                            try {
+                                const parsedValue = JSON.parse(e.target.value);
+                                if (Array.isArray(parsedValue)) {
+                                    setData("stanzas", e.target.value); // Valid JSON
+                                } else {
+                                    throw new Error("Stanzas must be an array.");
+                                }
+                            } catch {
+                                setData("stanzas", ""); // Clear invalid JSON
+                            }
+                        }}
                         placeholder={`[\n    {\n        "stanza": 1,\n        "lines": ["Line 1 of stanza 1", "Line 2 of stanza 1"]\n    },\n    {\n        "stanza": 2,\n        "lines": ["Line 1 of stanza 2", "Line 2 of stanza 2"]\n    }\n]`}
                         className="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm placeholder-gray-500 dark:placeholder-gray-400"
                     />
                     {errors.stanzas && <p className="mt-2 text-sm text-red-600">{errors.stanzas}</p>}
                 </div>
+
                 {/* Time Signature */}
                 <div className="mb-4">
                     <label

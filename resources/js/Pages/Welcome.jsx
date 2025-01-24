@@ -252,14 +252,14 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
         // Simple Time Signatures
         "1/4", "2/4", "3/4", "4/4", "5/4", "6/4", "7/4", "8/4", "9/4", "10/4", "11/4", "12/4",
         "2/2", "2/8", "3/8", "3/2",
-        // "4/8", "8/8", "16/8",
+        "4/8", "8/8", "16/8",
 
-        // // Simple Asymmetric Time Signatures
-        // "5/8", "7/8", "9/8", "11/8", "13/8", "15/8", "17/8", "19/8", "21/8",
+        // Simple Asymmetric Time Signatures
+        "5/8", "7/8", "9/8", "11/8", "13/8", "15/8", "17/8", "19/8", "21/8",
 
-        // // Compound Time Signatures
-        // "6/8", "9/8", // Compound duple, triple, etc.
-        // "6/16", "9/16", "12/16",
+        // Compound Time Signatures
+        "6/8", "9/8", // Compound duple, triple, etc.
+        "6/16", "9/16", "12/16",
     ];
     const keySignatures = ["A Major", "A Minor", "Ab Major", "B Major", "Bb Major", "B Minor",
         "C Major", "C Minor", "C# Minor", "D Major", "D Minor", "D# Minor",
@@ -356,6 +356,27 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                 </button>
                             </div>
 
+
+
+
+                            {/* Mobile Menu Content */}
+                            {isMenuOpen && (
+                                <div className="lg:hidden bg-gray-800 dark:bg-gray-900 py-2 px-6 space-y-2">
+                                    {["Advent", "Christmas", "Lent", "Easter", "Ordinary Time"].map((season) => (
+                                        <span
+                                            key={season}
+                                            className="block cursor-pointer hover:text-[#FF2D20]"
+                                            onClick={() => handleSeasonClick(season)}
+                                        >
+                                            {season}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </header>
+
+                        {/* Main Content */}
+                        <main className="mt-6">
                             {/* Seasons and Mass Sections Layout */}
                             <div className="bg-gray-800 dark:bg-gray-900 py-2 px-6 text-sm text-gray-300 dark:text-gray-300">
                                 {/* Season Tabs */}
@@ -390,22 +411,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                 </div>
 
                             </div>
-
-
-                            {/* Mobile Menu Content */}
-                            {isMenuOpen && (
-                                <div className="lg:hidden bg-gray-800 dark:bg-gray-900 py-2 px-6 space-y-2">
-                                    {["Advent", "Christmas", "Lent", "Easter", "Ordinary Time"].map((season) => (
-                                        <span
-                                            key={season}
-                                            className="block cursor-pointer hover:text-[#FF2D20]"
-                                            onClick={() => handleSeasonClick(season)}
-                                        >
-                                            {season}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
                             <div className='py-4 px-6'>
                                 {/* Time Signature Chips */}
                                 <div className="mt-4 flex flex-wrap gap-2 justify-start">
@@ -439,10 +444,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                     ))}
                                 </div>
                             </div>
-                        </header>
-
-                        {/* Main Content */}
-                        <main className="mt-6">
                             {/* Display First 20 Music Scores based on the Season and mass sectionfilter*/}
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
