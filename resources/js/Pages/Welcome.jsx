@@ -19,6 +19,32 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName, fil
         link.click();
         document.body.removeChild(link);
     };
+    const handleShare = (musicScores) => {
+        const shareData = {
+            title: musicScores.title,
+            text: `Check out this amazing score: ${musicScores.title}`,
+            url: window.location.href + musicScores.score_pdf,
+        };
+
+        // Check if the browser supports the Share API (only on mobile or modern browsers)
+        if (navigator.share) {
+            navigator
+                .share(shareData)
+                .then(() => {
+                    console.log('Successfully shared!');
+                })
+                .catch((error) => {
+                    console.error('Error sharing:', error);
+                });
+        } else {
+            // Fallback: For browsers that don't support Share API (desktop or older browsers)
+            // You can copy the score URL to clipboard or show a custom modal with share options
+            navigator.clipboard.writeText(shareData.url).then(() => {
+                alert('Score URL copied to clipboard!');
+            });
+        }
+    };
+
     const handleSeasonClick = (season) => {
         setSelectedSeason(season);
         setSelectedMassSection(null); // Reset mass section when season changes
