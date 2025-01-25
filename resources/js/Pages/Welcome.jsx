@@ -1,12 +1,49 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useState, useEffect } from "react";
-export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
+import { Download, Share } from "lucide-react";
+export default function Welcome({ auth, laravelVersion, phpVersion, appName, fileUrl }) {
     const musicScores = usePage().props.musicScores;
     const [searchTerm, setSearchTerm] = useState(""); // State for search input
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [selectedMassSection, setSelectedMassSection] = useState(null);
     const [theme, setTheme] = useState('light'); // For theme switching
     const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu
+    const handleDownload = (fileUrl) => {
+        const baseUrl = window.location.origin;
+        const fullUrl = `${baseUrl}/storage/${fileUrl}`;
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileUrl.split('/').pop();
+        document.body.appendChild(link);
+        console.log(fullUrl);
+        link.click();
+        document.body.removeChild(link);
+    };
+    const handleShare = (musicScores) => {
+        const shareData = {
+            title: musicScores.title,
+            text: `Check out this amazing score: ${musicScores.title}`,
+            url: window.location.href + musicScores.score_pdf,
+        };
+
+        // Check if the browser supports the Share API (only on mobile or modern browsers)
+        if (navigator.share) {
+            navigator
+                .share(shareData)
+                .then(() => {
+                    console.log('Successfully shared!');
+                })
+                .catch((error) => {
+                    console.error('Error sharing:', error);
+                });
+        } else {
+            // Fallback: For browsers that don't support Share API (desktop or older browsers)
+            // You can copy the score URL to clipboard or show a custom modal with share options
+            navigator.clipboard.writeText(shareData.url).then(() => {
+                alert('Score URL copied to clipboard!');
+            });
+        }
+    };
 
     const handleSeasonClick = (season) => {
         setSelectedSeason(season);
@@ -474,12 +511,32 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                                     <p><strong>Downloads:</strong> {score.downloads || "N/A"}</p>
                                                 </div>
                                             </div>
-                                            <div className="mt-4 flex justify-between items-center">
-                                                <button className="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-medium hover:bg-red-700 transition">
-                                                    <i className="fas fa-download mr-2"></i>Download
+                                            <div className="mt-4 flex justify-between items-center gap-4">
+                                                {/* Download PDF Button */}
+                                                <button
+                                                    className="flex items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-white text-xs font-medium hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                                    onClick={() => handleDownload(score.score_pdf)}
+                                                >
+                                                    <Download className="w-4 h-4" />
+                                                    Score PDF
                                                 </button>
-                                                <button className="rounded-md bg-blue-600 px-4 py-2 text-white text-sm font-medium hover:bg-blue-700 transition">
-                                                    <i className="fas fa-share-alt mr-2"></i>Share
+
+                                                {/* Download MIDI Button */}
+                                                <button
+                                                    className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-white text-xs font-medium hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                                    onClick={() => handleDownload(score.midi_file)}
+                                                >
+                                                    <Download className="w-4 h-4" />
+                                                    MIDI File
+                                                </button>
+
+                                                {/* Share Button */}
+                                                <button
+                                                    className="flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-white text-xs font-medium hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                                    onClick={() => handleShare(score)}
+                                                >
+                                                    <Share className="w-4 h-4" />
+                                                    Share
                                                 </button>
                                             </div>
                                         </div>
@@ -569,12 +626,32 @@ export default function Welcome({ auth, laravelVersion, phpVersion, appName }) {
                                                         <p><strong>Downloads:</strong> {score.downloads}</p>
                                                     </div>
                                                 </div>
-                                                <div className="mt-4 flex justify-between items-center">
-                                                    <button className="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-medium hover:bg-red-700 transition">
-                                                        <i className="fas fa-download mr-2"></i>Download
+                                                <div className="mt-4 flex justify-between items-center gap-4">
+                                                    {/* Download PDF Button */}
+                                                    <button
+                                                        className="flex items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-white text-xs font-medium hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                                        onClick={() => handleDownload(score.score_pdf)}
+                                                    >
+                                                        <Download className="w-4 h-4" />
+                                                        Score PDF
                                                     </button>
-                                                    <button className="rounded-md bg-blue-600 px-4 py-2 text-white text-sm font-medium hover:bg-blue-700 transition">
-                                                        <i className="fas fa-share-alt mr-2"></i>Share
+
+                                                    {/* Download MIDI Button */}
+                                                    <button
+                                                        className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-white text-xs font-medium hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                                        onClick={() => handleDownload(score.midi_file)}
+                                                    >
+                                                        <Download className="w-4 h-4" />
+                                                        MIDI File
+                                                    </button>
+
+                                                    {/* Share Button */}
+                                                    <button
+                                                        className="flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-white text-xs font-medium hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                                        onClick={() => handleShare(score)}
+                                                    >
+                                                        <Share className="w-4 h-4" />
+                                                        Share
                                                     </button>
                                                 </div>
                                             </div>
