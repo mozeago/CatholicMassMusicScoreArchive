@@ -27,6 +27,7 @@ return new class extends Migration
                 $table->integer('favorited')->default(0);
                 $table->string('midi_file')->nullable();
                 $table->string('score_pdf')->nullable();
+                $table->string('score_thumbnail_url')->nullable();
                 $table->text('chorus')->nullable();
                 $table->json('stanzas')->nullable();
                 $table->string('time_signature');

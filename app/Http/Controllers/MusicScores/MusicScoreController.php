@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\MusicScore\MusicScore;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Response;
+use Spatie\PdfToImage\Pdf;
 
 class MusicScoreController extends Controller
 {
@@ -147,7 +149,19 @@ class MusicScoreController extends Controller
         // Handle file uploads
         $midiPath = $request->hasFile('midi_file') ? $request->file('midi_file')->store('music-scores/midi', 'public') : null;
         $pdfPath = $request->file('score_pdf')->store('music-scores/pdf', 'public');
+        // Generate Thumbnail from the PDF
+        $thumbnailPath = null;
+        try {
+            $pdf = new Pdf(Storage::path("public/$pdfPath")); // Full path to the PDF file
+            $thumbnailFileName = Str::uuid() . '.jpg'; // Unique name for the thumbnail
+            $thumbnailFullPath = "music-scores/thumbnails/$thumbnailFileName";
 
+            $pdf->setPage(1)->saveImage(Storage::path("public/$thumbnailFullPath")); // Save thumbnail for page 1
+            $thumbnailPath = $thumbnailFullPath; // Store relative thumbnail path
+        } catch (\Exception $e) {
+            // Log error if thumbnail generation fails
+            \Log::error('Thumbnail generation failed: ' . $e->getMessage());
+        }
         // Create the music score entry
         MusicScore::create([
             'title' => $request->input('title'),
@@ -157,6 +171,7 @@ class MusicScoreController extends Controller
             'year_composed' => $request->input('year_composed'),
             'midi_file' => $midiPath,
             'score_pdf' => $pdfPath,
+            'score_thumbnail_url' => $thumbnailPath,
             'chorus' => $request->input('chorus'),
             'stanzas' => $request->input('stanzas'),
             'uploaded_by' => auth()->user()->id,
