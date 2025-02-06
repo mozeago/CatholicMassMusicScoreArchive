@@ -135,6 +135,9 @@ class MusicScoreController extends Controller
     // Handle the upload and save the music score
     public function store(Request $request)
     {
+        if (!auth()->check()) {
+            return redirect()->route('login')->withErrors(['auth' => 'You must be logged in to upload a music score.']);
+        }
         $request->validate([
             'title' => 'required|string|max:255',
             'composer' => 'required|string|max:255',
@@ -145,12 +148,22 @@ class MusicScoreController extends Controller
             'chorus' => 'nullable|string',
             'stanzas' => 'nullable|json',
         ]);
-
         // Handle file uploads
         $midiPath = $request->hasFile('midi_file') ? $request->file('midi_file')->store('music-scores/midi', 'public') : null;
-        $pdfPath = $request->file('score_pdf')->store('music-scores/pdf', 'public');
+        try {
+            $pdfPath = $request->file('score_pdf')->store('music-scores/pdf', 'public');
+        } catch (\Exception $e) {
+            return back()->withErrors(['score_pdf' => 'Failed to upload PDF.']);
+        }
+        if (!Storage::exists("public/$pdfPath")) {
+            return back()->withErrors(['score_pdf' => 'The uploaded PDF file cannot be processed.']);
+        }
+
         // Generate Thumbnail from the PDF
         $thumbnailPath = null;
+        if (!file_exists($pdfPath)) {
+            throw new \Exception("PDF file not found at: " . $pdfPath);
+        }
         try {
             $pdf = new Pdf(Storage::path("public/$pdfPath")); // Full path to the PDF file
             $thumbnailFileName = Str::uuid() . '.jpg'; // Unique name for the thumbnail
@@ -160,7 +173,9 @@ class MusicScoreController extends Controller
             $thumbnailPath = $thumbnailFullPath; // Store relative thumbnail path
         } catch (\Exception $e) {
             // Log error if thumbnail generation fails
-            \Log::error('Thumbnail generation failed: ' . $e->getMessage());
+            \Log::error('Thumbnail generation failed: ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
         }
         // Create the music score entry
         MusicScore::create([
